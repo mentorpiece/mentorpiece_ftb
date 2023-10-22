@@ -5,20 +5,26 @@ import com.aerotravel.flightticketbooking.model.dto.AircraftDto;
 import com.aerotravel.flightticketbooking.services.AircraftService;
 import com.aerotravel.flightticketbooking.services.EntityService;
 import com.aerotravel.flightticketbooking.services.FlightService;
+import com.opencsv.bean.CsvToBeanBuilder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @RestController
@@ -83,5 +89,40 @@ public class AircraftRestController extends AbstractRestController<Aircraft, Air
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Operation(summary = "Attempt to import aircraft data from CSV file.",
+            description =
+                    "</br>CSV file content sample:</br>" +
+                            "<pre>" +
+                            "manufacturer, model, numberOfSeats\n" +
+                            "\"Delf\", \"D-11\", 2\n" +
+                            "\"Delf\", \"D-12\", 8" +
+                            "</br> </pre>")
+    @PostMapping(value = "/import", consumes = "multipart/form-data")
+    public ResponseEntity<Map<String, String>> handleImportViaFile(
+            @RequestPart("file") MultipartFile file) throws IOException {
+        var map = new TreeMap<String, String>();
+
+        List<AircraftDto> beans = new CsvToBeanBuilder(new InputStreamReader(file.getInputStream()))
+                .withType(AircraftDto.class)
+                .build()
+                .parse();
+
+        for (AircraftDto dto : beans) {
+            // TODO: Need a saveAll() + save async
+            val createResult = create(dto);
+            if (HttpStatus.CREATED.value() == createResult.getStatusCodeValue()
+                    && null != createResult.getBody()) {
+                map.put(String.valueOf(createResult.getBody().getAircraftId()), String.valueOf(HttpStatus.CREATED));
+            }
+        }
+
+        map.put("File name", file.getOriginalFilename());
+        map.put("File size", String.valueOf(file.getSize()));
+        map.put("File content type", file.getContentType());
+        map.put("Message", "File upload done");
+
+        return ResponseEntity.ok(map);
     }
 }

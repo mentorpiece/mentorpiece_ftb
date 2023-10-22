@@ -28,11 +28,11 @@ public class VersionRestController {
     @Operation(summary = "Returns application version.")
     @ResponseStatus(HttpStatus.FOUND)
     public ResponseEntity<ApiResponse> getVersionInfo() {
-        log.info("Somebody asks about version number... .");
+        log.info("Somebody asks about version number... that is suspicious... .");
         var faker = new Faker(Locale.ENGLISH);
 
         var appV = "0.8";
-        var apiV = "00.062";
+        var apiV = "00.07"; //TODO: Move to properties.
         var headers = new HttpHeaders();
         headers.add("_FTB-version-app", appV);
         headers.add("_FTB-version-API", apiV);
@@ -56,8 +56,8 @@ public class VersionRestController {
 
         var details = new TreeMap<>(headers.toSingleValueMap());
         details.put("Heading", faker.compass().abbreviation());
-        details.put("Driving azimuth", faker.compass().azimuth());
-        details.put("Vehicle", faker.vehicle().makeAndModel());
+        details.put("Azimuth", faker.compass().azimuth());
+        details.put("Aircraft", faker.aviation().aircraft());
 
         return new ResponseEntity<>(ApiResponse.of()
                 .code(HttpStatus.FOUND.value())
