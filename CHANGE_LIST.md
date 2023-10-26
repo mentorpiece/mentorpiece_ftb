@@ -1,6 +1,7 @@
 Izvod 0.8 / API 00.07
 - API
   - Added import-from-CSV-file operation for Aircraft.
+  - Added export-to-CSV-file operation for Aircraft.
 - GUI
   - Nothing.
 --------------
