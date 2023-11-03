@@ -5,8 +5,9 @@ import com.aerotravel.flightticketbooking.model.dto.AircraftDto;
 import com.aerotravel.flightticketbooking.services.AircraftService;
 import com.aerotravel.flightticketbooking.services.EntityService;
 import com.aerotravel.flightticketbooking.services.FlightService;
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.*;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.HeaderColumnNameMappingStrategyBuilder;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,30 +17,29 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.collections.IteratorUtils;
-import org.apache.tomcat.jni.FileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static org.apache.commons.collections.IteratorUtils.*;
+import static org.apache.commons.collections.IteratorUtils.toList;
 
 @RestController
 @RequestMapping("/api/v0/aircrafts")
@@ -116,30 +116,70 @@ public class AircraftRestController extends AbstractRestController<Aircraft, Air
     @PostMapping(value = "/import", consumes = "multipart/form-data")
     public ResponseEntity<Map<String, String>> handleImportViaFile(
             @RequestPart("file") MultipartFile file) throws IOException {
-        var map = new TreeMap<String, String>();
+        var map = new LinkedHashMap<String, String>();
 
-        val beans = new CsvToBeanBuilder<AircraftDto>(new InputStreamReader(file.getInputStream()))
-                .withType(AircraftDto.class)
-                .build()
-                .parse();
+        if (null != file) {
+            log.info("About to import some data from '{}'", file.getOriginalFilename());
+            putFileInfo(file, map);
+            val records = parseRecords(file);
+            val savedEntities = aircraftService.saveAll(records.stream()
+                            .map(this::convertToEntity).collect(Collectors.toList()));
+            savedEntities.forEach(e -> map.put(String.valueOf(e.getAircraftId()), e.getModel()));
 
-        for (AircraftDto dto : beans) {
-            // TODO: Need a saveAll() + save async
-            val createResult = create(dto);
-            var key = dto.toString();
-            if (null != createResult.getBody()) {
-                key = String.valueOf(createResult.getBody().getAircraftId());
-            }
-
-            map.put(key, String.valueOf(createResult.getStatusCode()));
+            map.put("Records processed", String.valueOf(records.size()));
+        } else {
+            map.put("ERROR", "Nothing to import.");
         }
 
-        map.put("File name", file.getOriginalFilename());
-        map.put("File size", String.valueOf(file.getSize()));
-        map.put("File content type", file.getContentType());
         map.put("Message", "File upload done");
 
         return ResponseEntity.ok(map);
+    }
+    @Operation(summary = "Attempt to import aircraft data from CSV file asynchronously.",
+            description =
+                    "</br>CSV file content sample:</br>" +
+                            "<pre>" +
+                            "manufacturer, model, numberOfSeats\n" +
+                            "\"E\", \"E-155\", 1\n" +
+                            "\"E\", \"E-156\", 2" +
+                            "</br> </pre>")
+    @PostMapping(value = "/import/async", consumes = "multipart/form-data")
+    @Async
+    public CompletableFuture<ResponseEntity<String>> handleImportViaFileAsync(
+            @RequestPart("file") MultipartFile file) throws IOException, InterruptedException {
+        // Handle empty file error
+        if (null == file || file.isEmpty()) {
+            return CompletableFuture
+                    .completedFuture(ResponseEntity.badRequest().body("No file submitted"));
+        }
+        // File upload process is submitted
+        else {
+            log.info("About to start Aircraft data import from '{}'", file.getOriginalFilename());
+            val records = parseRecords(file);
+
+            for (AircraftDto dto : records) {
+                val saved = aircraftService.saveAsync(convertToEntity(dto));
+                if (null != saved) {
+                    log.info("Saved {}", saved.getAircraftId());
+                }
+            }
+
+            return CompletableFuture.completedFuture(
+                    ResponseEntity.ok("File upload started. Keep calm and wait for delivery."));
+        }
+    }
+
+    private void putFileInfo(MultipartFile file, Map<String, String> map) {
+        map.put("File name", file.getOriginalFilename());
+        map.put("File size", String.valueOf(file.getSize()));
+        map.put("File content type", file.getContentType());
+    }
+
+    private List<AircraftDto> parseRecords(MultipartFile file) throws IOException {
+        return new CsvToBeanBuilder<AircraftDto>(new InputStreamReader(file.getInputStream()))
+                .withType(AircraftDto.class)
+                .build()
+                .parse();
     }
 
     @Operation(summary = "Attempt to export all aircraft records to CSV file.")

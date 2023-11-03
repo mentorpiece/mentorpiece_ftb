@@ -5,21 +5,36 @@ import com.aerotravel.flightticketbooking.model.dto.AircraftDto;
 import com.aerotravel.flightticketbooking.model.dto.FlightDto;
 import com.aerotravel.flightticketbooking.model.dto.PassengerDto;
 import com.aerotravel.flightticketbooking.model.dto.UserDto;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.val;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 @Configuration
+@EnableAsync
 public class AppConfig {
+
+    @Bean
+    public Executor taskExecutor() {
+        val executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("AsyncFileUploader - ");
+        executor.initialize();
+        return executor;
+    }
 
     @Bean
     public ObjectMapper provideObjectMapper(){

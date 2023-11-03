@@ -4,22 +4,31 @@ import com.aerotravel.flightticketbooking.model.Aircraft;
 import com.aerotravel.flightticketbooking.model.Airport;
 import com.aerotravel.flightticketbooking.model.Flight;
 import com.aerotravel.flightticketbooking.model.Passenger;
+import com.aerotravel.flightticketbooking.rest.v0.AircraftRestController;
 import com.aerotravel.flightticketbooking.services.AircraftService;
 import com.aerotravel.flightticketbooking.services.AirportService;
 import com.aerotravel.flightticketbooking.services.FlightService;
 import com.aerotravel.flightticketbooking.services.PassengerService;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Controller
@@ -29,6 +38,8 @@ public class MainController {
     AirportService airportService;
     @Autowired
     AircraftService aircraftService;
+    @Autowired
+    AircraftRestController aircraftRestController;
     @Autowired
     FlightService flightService;
     @Autowired
@@ -152,9 +163,7 @@ public class MainController {
     public String deleteAircraft(@PathParam("aircraftId") long aircraftId, Model model) {
         log.info("About to delete aircraft, id=={}", aircraftId);
         aircraftService.deleteById(aircraftId);
-        model.addAttribute("aircrafts", aircraftService.getAllPaged(0));
-        model.addAttribute("currentPage", 0);
-        return "aircrafts";
+        return showAircraftsList(0, model); //TODO(L.E.): fix this one day.
     }
 
     @GetMapping("/aircrafts")
@@ -163,6 +172,18 @@ public class MainController {
         model.addAttribute("aircrafts", aircraftService.getAllPaged(pageNo));
         model.addAttribute("currentPage", pageNo);
         return "aircrafts";
+    }
+
+    @PostMapping(value = "/aircrafts/upload")
+    public String importAircrafts(Model model, @RequestParam(value = "file", required = false) MultipartFile data) throws IOException {
+        log.info("About to import aircraft data from CSV file");
+        val response = aircraftRestController.handleImportViaFile(data);
+
+        if (null != response && response.hasBody()) {
+            model.addAttribute("messages", requireNonNull(response.getBody()).entrySet());
+        }
+
+        return showAircraftsList(0, model);
     }
 
     @GetMapping("/flight/new")
@@ -390,7 +411,6 @@ public class MainController {
         log.info("Ola-ola-ola-ola, somebody is going to login! Probably... .");
         return "login";
     }
-
 
     @GetMapping("fancy")
     public String showLoginPage1() {

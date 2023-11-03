@@ -10,6 +10,10 @@ public interface AircraftService extends EntityService<Aircraft> {
 
     List<Aircraft> getByManufacturer(String manufacturerName);
 
+    Aircraft saveAsync(Aircraft data) throws InterruptedException;
+
+    List<Aircraft> saveAll(List<Aircraft> entities);
+
     default EntityNotFoundException buildEntityNotFoundException(long id) {
         return buildEntityNotFoundException("Aircraft", id);
     }
