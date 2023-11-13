@@ -8,6 +8,7 @@ import com.aerotravel.flightticketbooking.repository.AircraftRepository;
 import com.aerotravel.flightticketbooking.repository.AirportRepository;
 import com.aerotravel.flightticketbooking.repository.FlightRepository;
 import com.aerotravel.flightticketbooking.repository.PassengerRepository;
+import lombok.val;
 import net.datafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.providers.base.Address;
@@ -66,9 +67,9 @@ public class DataGenService {
         var passengers = createPassengers(rnd, flights);
 
         var data = new TreeMap<String, List<String>>();
-        data.put("Aircrafts", aircrafts.stream().map(Aircraft::toShortString).collect(Collectors.toList()));
-        data.put("Airports", airports.stream().map(Airport::toShortString).collect(Collectors.toList()));
-        data.put("Flights", flights.stream().map(Flight::toShortString).collect(Collectors.toList()));
+        data.put("Aircrafts", aircrafts.stream().map(Aircraft::describe).collect(Collectors.toList()));
+        data.put("Airports", airports.stream().map(Airport::describe).collect(Collectors.toList()));
+        data.put("Flights", flights.stream().map(Flight::describe).collect(Collectors.toList()));
         data.put("Passengers", passengers.stream().map(Passenger::toString).collect(Collectors.toList()));
 
         return data;
@@ -186,13 +187,13 @@ public class DataGenService {
 
     public List<Flight> createFlights(Random rnd, List<Aircraft> aircrafts, List<Airport> airports) {
         log.info("\n\tAbout to create fake flights.\n");
-        List<Flight> data = new ArrayList<>();
+        var data = new ArrayList<Flight>();
         for (int i = 0; i < ALMOST_UPPER_BOUND; i++) {
-            var depDate = LocalDate.ofInstant(dateFaker.future(1 + rnd.nextInt(144), TimeUnit.DAYS).toInstant(),
+            val depDate = LocalDate.ofInstant(dateFaker.future(1 + rnd.nextInt(144), TimeUnit.DAYS).toInstant(),
                     ZoneId.systemDefault());
 
-            var entry = Flight.builder()
-                    .flightNumber(faker.regexify("[A-Z]{2}\\d{4}"))
+            val entry = Flight.builder()
+                    .flightNumber(faker.aviation().flight())
                     .flightCharge(Double.MAX_EXPONENT * rnd.nextDouble())
                     .aircraft(getRandomEntity(rnd, aircrafts))
                     .departureDate(depDate)

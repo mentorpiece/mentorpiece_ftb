@@ -86,7 +86,7 @@ public class Flight {
                 '}';
     }
 
-    public String toShortString() {
+    public String describe() {
         return "Flight{" +
                 "flightId=" + flightId +
                 ", flightNumber='" + flightNumber + '\'' +
