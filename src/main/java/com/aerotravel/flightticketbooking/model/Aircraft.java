@@ -66,7 +66,7 @@ public class Aircraft {
                 '}';
     }
 
-    public String toShortString() {
+    public String describe() {
         return "Aircraft{" +
                 "aircraftId=" + aircraftId +
                 ", manufacturer='" + manufacturer + '\'' +

@@ -49,13 +49,13 @@ public class AircraftServiceImpl extends AbstractEntityServiceImpl<Aircraft> imp
     @Async
     @Override
     public Aircraft saveAsync(Aircraft data) throws InterruptedException {
-        log.info("About to insert an aircraft like {}", data.toShortString());
+        log.info("About to insert an aircraft like {}", data.describe());
         // For educational purpose only! Let's mimic delays.
         val rnd = new Random();
         Thread.sleep(rnd.nextInt(2187) + rnd.nextInt(3456));
         val saved = aircraftRepository.save(data);
 
-        log.info("Just inserted an aircraft like {}", saved.toShortString());
+        log.info("Just inserted an aircraft like {}", saved.describe());
         return saved;
     }
 

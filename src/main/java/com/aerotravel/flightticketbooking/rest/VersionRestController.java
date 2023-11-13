@@ -4,6 +4,7 @@ import com.aerotravel.flightticketbooking.model.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import net.datafaker.Faker;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,30 +30,30 @@ public class VersionRestController {
     @ResponseStatus(HttpStatus.FOUND)
     public ResponseEntity<ApiResponse> getVersionInfo() {
         log.info("Somebody asks about version number... that is suspicious... .");
-        var faker = new Faker(Locale.ENGLISH);
+        val faker = new Faker(Locale.ENGLISH);
 
-        var appV = "0.8";
-        var apiV = "00.07"; //TODO: Move to properties.
+        val appV = "0.8";
+        val apiV = "00.07"; //TODO: Move to properties.
         var headers = new HttpHeaders();
         headers.add("_FTB-version-app", appV);
         headers.add("_FTB-version-API", apiV);
         headers.add("_FTB-version-mood", faker.mood().emotion());
         headers.add("_FTB-version-tone", faker.mood().tone());
 
-        var data = String.format("As of %s the application version is %s and the API version is %s and that is slightly amazing. ||   " +
-                                " Meanwhile %s %s feels %s and thinks it is time to read '%s' by '%s'.  " +
+        val data = String.format("As of %s the application version is %s and the API version is %s and that is slightly amazing. ||   " +
+                        " Meanwhile %s %s feels %s and thinks it is time to read '%s' by '%s'.  " +
                         "Or fly by %s to %s using %s on flight %s.",
-                        LocalDateTime.now(),
-                        appV,
-                        apiV,
-                        faker.cat().breed(), faker.cat().name(),
-                        faker.mood().feeling(),
-                        faker.book().title(),
-                        faker.book().author(),
-                        faker.aviation().airline(),
-                        faker.aviation().airport(),
-                        faker.aviation().aircraft(),
-                        faker.aviation().flight());
+                LocalDateTime.now(),
+                appV,
+                apiV,
+                faker.cat().breed(), faker.cat().name(),
+                faker.mood().feeling(),
+                faker.book().title(),
+                faker.book().author(),
+                faker.aviation().airline(),
+                faker.aviation().airport(),
+                faker.aviation().aircraft(),
+                faker.aviation().flight());
 
         var details = new TreeMap<>(headers.toSingleValueMap());
         details.put("Heading", faker.compass().abbreviation());

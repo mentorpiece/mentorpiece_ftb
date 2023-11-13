@@ -64,7 +64,7 @@ public class Airport {
                 '}';
     }
 
-    public String toShortString() {
+    public String describe() {
         return "Airport{" +
                 "airportId=" + airportId +
                 ", airportCode='" + airportCode + '\'' +
