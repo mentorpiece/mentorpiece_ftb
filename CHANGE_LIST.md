@@ -1,3 +1,11 @@
+Izvod 0.8 / API 00.07
+- API
+  - Added import-from-CSV-file operation for Aircraft.
+  - Added async import-from-CSV-file operation for Aircraft.
+  - Added export-to-CSV-file operation for Aircraft.
+- GUI
+  - Added import-from-CSV-file operation for Aircraft..
+--------------
 Izvod 0.8 / API 00.062
 - API
   - Improved DELETE and VERSION responses - a DTO is now used instead of plain String.
