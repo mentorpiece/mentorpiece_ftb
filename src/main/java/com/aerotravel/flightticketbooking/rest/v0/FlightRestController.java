@@ -9,6 +9,7 @@ import com.aerotravel.flightticketbooking.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,7 +65,9 @@ public class FlightRestController extends AbstractRestController<Flight, FlightD
     protected Flight convertToEntity(FlightDto entityDto) {
         var candidate = modelMapper.map(entityDto, Flight.class);
 
-        candidate.setAircraft(aircraftService.getById(entityDto.getAircraftId()));
+        val aircraft = aircraftService.getOptionallyById(entityDto.getAircraftId())
+                .orElseThrow(() -> new IllegalArgumentException("Could not find aircraft Id=" + entityDto.getAircraftId()));
+        candidate.setAircraft(aircraft);
         candidate.setPassengers(passengerService.getAllById(entityDto.getPassengerIds()));
 
         if (null != entityDto.getDepartureAirportCode()) {
@@ -81,37 +85,63 @@ public class FlightRestController extends AbstractRestController<Flight, FlightD
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Attempt to create an entity by using its DTO.",
-            description = "Try to use a JSON like: \n</br>" +
-                    "<pre>" +
-                    "  {\n" +
-                    "        \"flightNumber\": \"SU7213\",\n" +
-                    "            \"departureAirportCode\": \"AGAT\",\n" +
-                    "            \"destinationAirportCode\": \"CYBA\",\n" +
-                    "            \"departureDate\": \"2023-01-19\",\n" +
-                    "            \"arrivalDate\": \"2023-01-19\",\n" +
-                    "            \"departureTime\": \"10:10\",\n" +
-                    "            \"arrivalTime\": \"12:12\",\n" +
-                    "            \"flightCharge\": 1050.72,\n" +
-                    "            \"aircraftId\": 1\n" +
-                    "    }" +
-                    "</br></pre>"
+            description = """
+                    Try to use a JSON like:\s
+                    </br><pre>  {
+                            "flightNumber": "SU7213",
+                                "departureAirportCode": "AGAT",
+                                "destinationAirportCode": "CYBA",
+                                "departureDate": "2023-01-19",
+                                "arrivalDate": "2023-01-19",
+                                "departureTime": "10:10",
+                                "arrivalTime": "12:12",
+                                "gate": "A12",
+                                "status": "BOARDING",
+                                "flightCharge": 1050.72,
+                                "aircraftId": 1
+                        }</br></pre>"""
     )
     public ResponseEntity<FlightDto> create(@Valid @RequestBody FlightDto entityDto) {
         log.info("Attempting to create a Flight record. {}", entityDto);
 
+        doBasicValidation(entityDto);
+
+        val headers = buildHeaders(entityDto);
+
+        return new ResponseEntity<>(convertToDto(getService()
+                .save(convertToEntity(entityDto))), headers, HttpStatus.CREATED);
+    }
+
+    private void doBasicValidation(FlightDto entityDto) {
         if (entityDto.getArrivalDate().isBefore(entityDto.getDepartureDate())) {
             throw new IllegalArgumentException("Departure date shall be _aftEr_ the arrival one.");
         }
 
+        if (null == entityDto.getDepartureAirportCode() || null == entityDto.getDestinationAirportCode()) {
+            throw new IllegalArgumentException("Departure/Arrival location(s) shall be specified.");
+        }
+
+        if (entityDto.getFlightCharge() < -2.78) {
+            throw new IllegalArgumentException("Seems to be too cheap to be true.");
+        }
+    }
+
+    private HttpHeaders buildHeaders(FlightDto entityDto) {
         var headers = new HttpHeaders();
-        if (entityDto.getFlightCharge() > 10100.2) {
-            headers.add("_FTB-flight", "It is soooo expensive to travel nowdays... .");
+        if (entityDto.getFlightCharge() > 512.2) {
+            val msg = "It is soooo expensive to travel nowdays... .";
+            log.warn(msg);
+            headers.add("_FTB-flight", msg);
+        }
+        if (entityDto.getDepartureDate().getMonth().equals(Month.JANUARY)
+                && entityDto.getDepartureDate().getDayOfMonth() == 1) {
+            val msg = "Do you really need that flight?";
+            log.warn(msg);
+            headers.add("_FTB-NY-egg", msg);
         }
 
         log.info("\n\n\t\t\t{}", headers);
-
-        return new ResponseEntity<>(convertToDto(getService()
-                .save(convertToEntity(entityDto))), headers, HttpStatus.CREATED);
+        return headers;
     }
 
     @GetMapping("/number/{flightNumber}")
@@ -152,17 +182,16 @@ public class FlightRestController extends AbstractRestController<Flight, FlightD
 
     @PostMapping("/book/{flightId}")
     @Operation(summary = "Attempt to book a ticket for the flight.",
-            description = "Try to use a JSON like: \n</br>" +
-                    "<pre>" +
-                    " {\n" +
-                    "  \"firstName\": \"Vasisualij\",\n" +
-                    "  \"lastName\": \"Lokhankin\",\n" +
-                    "  \"phoneNumber\": \"+01234567890\",\n" +
-                    "  \"passportNumber\": \"9988 453627\",\n" +
-                    "  \"email\": \"Vas.Lo@ilf.petrov\",\n" +
-                    "  \"address\": \"Tam, za ozerom, d.144\"\n" +
-                    "}" +
-                    "</br></pre>")
+            description = """
+                    Try to use a JSON like:\s
+                    </br><pre> {
+                      "firstName": "Vasisualij",
+                      "lastName": "Lokhankin",
+                      "phoneNumber": "+01234567890",
+                      "passportNumber": "9988 453627",
+                      "email": "Vas.Lo@ilf.petrov",
+                      "address": "Tam, za ozerom, d.144"
+                    }</br></pre>""")
     public ResponseEntity<PassengerDto> bookFlight(@Valid @RequestBody PassengerDto passengerDto,
                                                    @PathVariable("flightId") long flightId) {
         log.info("Booking for the flight {}.", flightId);

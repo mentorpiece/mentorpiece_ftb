@@ -10,13 +10,13 @@
     </parent>
     <groupId>com.aeroTravel</groupId>
     <artifactId>flightticketbooking</artifactId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.0.95-SNAPSHOT</version>
     <name>flightTicketBooking</name>
     <packaging>jar</packaging>
-    <description>Flight ticket booking application for M2P</description>
+    <description>Flight ticket booking application, M2P edition</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <servlet.version>4.0.0</servlet.version>
         <faker.version>2.0.2</faker.version>
     </properties>

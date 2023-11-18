@@ -32,13 +32,14 @@ public class VersionRestController {
         log.info("Somebody asks about version number... that is suspicious... .");
         val faker = new Faker(Locale.ENGLISH);
 
-        val appV = "0.8";
-        val apiV = "00.07"; //TODO: Move to properties.
-        var headers = new HttpHeaders();
+        val appV = "0.9";
+        val apiV = "00.075"; //TODO: Move to properties.
+        val headers = new HttpHeaders();
         headers.add("_FTB-version-app", appV);
         headers.add("_FTB-version-API", apiV);
         headers.add("_FTB-version-mood", faker.mood().emotion());
         headers.add("_FTB-version-tone", faker.mood().tone());
+        headers.add("_FTB-version-scrt", faker.code().imei());
 
         val data = String.format("As of %s the application version is %s and the API version is %s and that is slightly amazing. ||   " +
                         " Meanwhile %s %s feels %s and thinks it is time to read '%s' by '%s'.  " +
@@ -49,13 +50,13 @@ public class VersionRestController {
                 faker.cat().breed(), faker.cat().name(),
                 faker.mood().feeling(),
                 faker.book().title(),
-                faker.book().author(),
+                faker.funnyName().name(),
                 faker.aviation().airline(),
                 faker.aviation().airport(),
                 faker.aviation().aircraft(),
                 faker.aviation().flight());
 
-        var details = new TreeMap<>(headers.toSingleValueMap());
+        val details = new TreeMap<>(headers.toSingleValueMap());
         details.put("Heading", faker.compass().abbreviation());
         details.put("Azimuth", faker.compass().azimuth());
         details.put("Aircraft", faker.aviation().aircraft());

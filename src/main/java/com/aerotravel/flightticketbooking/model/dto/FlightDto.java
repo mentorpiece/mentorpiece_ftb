@@ -38,6 +38,8 @@ public class FlightDto implements IdedEntity {
     private String departureTime;
     @NotBlank
     private String arrivalTime;
+    private String gate;
+    private String status;
     @PositiveOrZero(message = "flightCharge - Shall be positive!")
     @Max(value = 999999999, message = "That was a bit too much.")
     private double flightCharge;

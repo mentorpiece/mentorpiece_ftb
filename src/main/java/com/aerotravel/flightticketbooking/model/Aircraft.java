@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "aircraftId")
-public class Aircraft {
+public class Aircraft implements Comparable<Aircraft>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long aircraftId;
@@ -45,6 +45,7 @@ public class Aircraft {
         this.manufacturer = manufacturer;
         this.model = model;
         this.numberOfSeats = numberOfSeats;
+        this.flights = new ArrayList<>();
     }
 
     public Aircraft(long id, String manufacturer, String model, Integer numberOfSeats) {
@@ -52,6 +53,7 @@ public class Aircraft {
         this.manufacturer = manufacturer;
         this.model = model;
         this.numberOfSeats = numberOfSeats;
+        this.flights = new ArrayList<>();
     }
 
     @Override
@@ -62,7 +64,7 @@ public class Aircraft {
                 ", model='" + model + '\'' +
                 ", numberOfSeats=" + numberOfSeats +
                 ", flights=" + flights.stream()
-                .filter(Objects::nonNull).map(Flight::getFlightNumber).collect(Collectors.toList()) +
+                .filter(Objects::nonNull).map(Flight::getFlightNumber).toList() +
                 '}';
     }
 
@@ -74,4 +76,18 @@ public class Aircraft {
                 ", numberOfSeats=" + numberOfSeats +
                 '}';
     }
+
+    @Override
+    public int compareTo(Aircraft that) {
+        if (null == that) {
+            return -1;
+        }
+
+        if (null == that.model || null == this.model) {
+            return Long.compare(this.aircraftId, that.aircraftId);
+        }
+
+        return this.model.compareTo(that.model);
+    }
+
 }

@@ -8,9 +8,9 @@ import com.aerotravel.flightticketbooking.repository.AircraftRepository;
 import com.aerotravel.flightticketbooking.repository.AirportRepository;
 import com.aerotravel.flightticketbooking.repository.FlightRepository;
 import com.aerotravel.flightticketbooking.repository.PassengerRepository;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import net.datafaker.Faker;
-import lombok.extern.slf4j.Slf4j;
 import net.datafaker.providers.base.Address;
 import net.datafaker.providers.base.Aviation;
 import net.datafaker.providers.base.DateAndTime;
@@ -52,21 +52,21 @@ public class DataGenService {
 
     public Map<String, List<String>> generateAll() {
         log.info("About to generate and persist fake data.");
-        Random rnd = new Random();
+        val rnd = new Random();
 
         // Use both existing and freshly generated data.
         createAircrafts(rnd);
-        var aircrafts = aircraftRepository.findAll();
+        val aircrafts = aircraftRepository.findAll();
 
         createAirports();
-        var airports = airportRepository.findAll();
+        val airports = airportRepository.findAll();
 
         createFlights(rnd, aircrafts, airports);
-        var flights = flightRepository.findAll();
+        val flights = flightRepository.findAll();
 
-        var passengers = createPassengers(rnd, flights);
+        val passengers = createPassengers(rnd, flights);
 
-        var data = new TreeMap<String, List<String>>();
+        val data = new TreeMap<String, List<String>>();
         data.put("Aircrafts", aircrafts.stream().map(Aircraft::describe).collect(Collectors.toList()));
         data.put("Airports", airports.stream().map(Airport::describe).collect(Collectors.toList()));
         data.put("Flights", flights.stream().map(Flight::describe).collect(Collectors.toList()));
@@ -77,10 +77,10 @@ public class DataGenService {
 
     public List<Aircraft> createAircrafts(Random rnd) {
         log.info("\n\tAbout to create fake aircrafts.\n");
-        List<Aircraft> aircrafts = new ArrayList<>();
+        var aircrafts = new ArrayList<Aircraft>();
         for (int i = 0; i < ALMOST_UPPER_BOUND; i++) {
-            String model = aviaFaker.aircraft();
-            var aircraft = Aircraft.builder()
+            val model = aviaFaker.aircraft();
+            val aircraft = Aircraft.builder()
                     .model(model)
                     .manufacturer(model.split("-|\\s")[0])
                     .numberOfSeats(1 + Math.abs(rnd.nextInt(850)))
@@ -89,12 +89,24 @@ public class DataGenService {
             aircrafts.add(aircraft);
         }
 
-        final var tupolev = "Tupolev";
-        final var il = "Ilushin";
-        final var cyxou = "Cyxou";
-        final var yakovlev = "Yakovlev";
-        final var airbus = "Airbus";
-        final var boeing = "Boeing";
+        addPredefinedAircraftsIfNeeded(aircrafts);
+        val existingData = aircraftRepository.findAll();
+        val existingModels = existingData.stream()
+                .map(Aircraft::getModel)
+                .toList();
+        val newModels = aircrafts.stream()
+                .filter(a-> !existingModels.contains(a.getModel())).toList();
+
+        return aircraftRepository.saveAll(newModels);
+    }
+
+    private void addPredefinedAircraftsIfNeeded(List<Aircraft> aircrafts) {
+        val tupolev = "Tupolev";
+        val il = "Ilushin";
+        val cyxou = "Cyxou";
+        val yakovlev = "Yakovlev";
+        val airbus = "Airbus";
+        val boeing = "Boeing";
 
         aircrafts.add(new Aircraft(tupolev, "Tu-214", 150));
         aircrafts.add(new Aircraft(tupolev, "Tu-154", 140));
@@ -123,13 +135,11 @@ public class DataGenService {
         aircrafts.add(new Aircraft(boeing, "B-757", 300));
         aircrafts.add(new Aircraft(boeing, "B-777", 250));
         aircrafts.add(new Aircraft(boeing, "B-787", 350));
-
-        return aircraftRepository.saveAll(aircrafts);
     }
 
     public List<Airport> createAirports() {
         log.info("\n\tAbout to create fake airports.\n");
-        List<Airport> data = new ArrayList<>();
+        var data = new ArrayList<Airport>();
         var codes = new ArrayList<String>();
         for (int i = 0; i < ALMOST_UPPER_BOUND; i++) {
             var code = aviaFaker.airport();
@@ -145,7 +155,7 @@ public class DataGenService {
 
                 var entry = Airport.builder()
                         .airportCode(code)
-                        .airportName(faker.funnyName().name())
+                        .airportName(aviaFaker.airportName())
                         .city(addressFaker.city())
                         .state(addressFaker.state())
                         .country(addressFaker.country())
@@ -165,9 +175,9 @@ public class DataGenService {
         var existingData = airportRepository.findAll();
         var existingCodes = existingData.stream()
                 .map(Airport::getAirportCode)
-                .collect(Collectors.toList());
+                .toList();
         var filteredData = data.stream()
-                .filter(a-> !existingCodes.contains(a.getAirportCode())).collect(Collectors.toList());
+                .filter(a-> !existingCodes.contains(a.getAirportCode())).toList();
         try {
             return airportRepository.saveAll(filteredData);
         } catch (Throwable e) {
@@ -193,15 +203,17 @@ public class DataGenService {
                     ZoneId.systemDefault());
 
             val entry = Flight.builder()
-                    .flightNumber(faker.aviation().flight())
+                    .flightNumber(aviaFaker.flight())
                     .flightCharge(Double.MAX_EXPONENT * rnd.nextDouble())
-                    .aircraft(getRandomEntity(rnd, aircrafts))
+                    .aircraft(getAny(rnd, aircrafts))
                     .departureDate(depDate)
                     .arrivalDate(depDate.plus(rnd.nextInt(2), ChronoUnit.DAYS))
                     .departureTime(dateFaker.future(1 + rnd.nextInt(36), TimeUnit.HOURS).toString())
                     .arrivalTime(dateFaker.future(2 + rnd.nextInt(36), TimeUnit.HOURS).toString())
-                    .departureAirport(getRandomEntity(rnd, airports))
-                    .destinationAirport(getRandomEntity(rnd, airports))
+                    .departureAirport(getAny(rnd, airports))
+                    .destinationAirport(getAny(rnd, airports))
+                    .gate(aviaFaker.gate())
+                    .status(aviaFaker.flightStatus())
                     .build();
 
             data.add(entry);
@@ -215,7 +227,7 @@ public class DataGenService {
         List<Passenger> data = new ArrayList<>();
         for (int i = 0; i < ALMOST_UPPER_BOUND; i++) {
             var entry = Passenger.builder()
-                    .flight(getRandomEntity(rnd, flights))
+                    .flight(getAny(rnd, flights))
                     .firstName(nameFaker.firstName())
                     .lastName(nameFaker.lastName())
                     .phoneNumber(faker.phoneNumber().phoneNumber())
@@ -230,8 +242,8 @@ public class DataGenService {
         return passengerRepository.saveAll(data);
     }
 
-    private <R> R getRandomEntity(Random rnd, List<R> entities) {
-        var index = rnd.nextInt(entities.size());
+    private <R> R getAny(Random rnd, List<R> entities) {
+        val index = rnd.nextInt(entities.size());
         return entities.get(index);
     }
 }

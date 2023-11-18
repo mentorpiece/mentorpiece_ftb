@@ -17,7 +17,7 @@ import java.util.List;
 public class FlightServiceImpl extends AbstractEntityServiceImpl<Flight> implements FlightService {
 
     private final FlightRepository flightRepository;
-    private final String[] sortBy = new String[]{"departureAirport"};
+    private final String[] sortBy = new String[]{"departureDate"};
 
     @Autowired
     public FlightServiceImpl(FlightRepository flightRepository) {

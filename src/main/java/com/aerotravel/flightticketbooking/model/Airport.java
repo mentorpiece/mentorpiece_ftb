@@ -13,7 +13,6 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "airportCode")
-public class Airport {
+public class Airport implements Comparable<Airport>{
     @OneToMany(mappedBy = "departureAirport")
     @Builder.Default
     @JsonManagedReference("airport-flights")
@@ -60,7 +59,7 @@ public class Airport {
                 ", state='" + state + '\'' +
                 ", country='" + country + '\'' +
                 ", flights=" + flights.stream()
-                .filter(Objects::nonNull).map(Flight::getFlightNumber).collect(Collectors.toList()) +
+                .filter(Objects::nonNull).map(Flight::getFlightNumber).toList() +
                 '}';
     }
 
@@ -73,5 +72,18 @@ public class Airport {
                 ", state='" + state + '\'' +
                 ", country='" + country + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Airport that) {
+        if (null == that) {
+            return -1;
+        }
+
+        if (null == that.airportName || null == this.airportName) {
+            return Long.compare(this.airportId, that.airportId);
+        }
+
+        return this.airportName.compareTo(that.airportName);
     }
 }

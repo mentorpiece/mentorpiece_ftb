@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "flightNumber")
-public class Flight {
+public class Flight implements Comparable<Flight>{
     @ManyToOne
     @JsonBackReference("aircraft-flights")
     Aircraft aircraft;
@@ -55,6 +55,8 @@ public class Flight {
     private String departureTime;
     @NotBlank
     private String arrivalTime;
+    private String gate;
+    private String status;
     @PositiveOrZero(message = "Shall be positive!")
     private double flightCharge;
 
@@ -80,9 +82,11 @@ public class Flight {
                 ", arrivalDate=" + arrivalDate +
                 ", departureTime='" + departureTime + '\'' +
                 ", arrivalTime='" + arrivalTime + '\'' +
+                ", gate='" + gate + '\'' +
+                ", status='" + status + '\'' +
                 ", flightCharge=" + flightCharge +
                 ", aircraft=" + (aircraft == null ? null : aircraft.getModel()) +
-                ", passengers=" + passengers.stream().map(Passenger::getLastName).collect(Collectors.toList()) +
+                ", passengers=" + passengers.stream().map(Passenger::getLastName).toList() +
                 '}';
     }
 
@@ -96,8 +100,23 @@ public class Flight {
                 ", arrivalDate=" + arrivalDate +
                 ", departureTime='" + departureTime + '\'' +
                 ", arrivalTime='" + arrivalTime + '\'' +
+                ", gate='" + gate + '\'' +
+                ", status='" + status + '\'' +
                 ", flightCharge=" + flightCharge +
                 ", aircraft=" + (aircraft == null ? null : aircraft.getModel()) +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Flight that) {
+        if (null == that) {
+            return -1;
+        }
+
+        if (null == that.flightNumber || null == this.flightNumber) {
+            return Long.compare(this.flightId, that.flightId);
+        }
+
+        return this.flightNumber.compareTo(that.flightNumber);
     }
 }
