@@ -49,7 +49,6 @@
                            required type="date">
                 </div>
 
-
                 <div class="form-group col-12">
                     <button id = "btnSearch" class="btn btn-success" style="float: right" type="submit">Search</button>
                 </div>
@@ -59,7 +58,9 @@
         <div class="row">
             <th:block th:if="${notFound !=null}">
                 <div class="col-12">
-                    <p style="text-align: center; margin-top: 30px; color: red; font-weight: bold">No Record Found!</p>
+                    <p style="text-align: center; margin-top: 30px; color: red; font-weight: bold">
+                        <span th:text="${notFound}"></span>
+                    </p>
                 </div>
             </th:block>
             <th:block th:if="${flights!=null}">

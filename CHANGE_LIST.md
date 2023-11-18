@@ -1,16 +1,23 @@
-Izvod 0.8 / API 00.07
+Izvod 0.9 / API 00.07
+- Target Java version is 17 now.
+- Added new 'gate' property to the Flight entity.
+- Added new 'status' property to the Flight entity.
+- Data generator tries to create unique aircrafts now (try to avoid duplicate models).
 - API
   - Added import-from-CSV-file operation for Aircraft.
   - Added async import-from-CSV-file operation for Aircraft.
   - Added export-to-CSV-file operation for Aircraft.
 - GUI
-  - Added import-from-CSV-file operation for Aircraft..
+  - Added import-from-CSV-file operation for Aircraft.
+  - Altered search/new/list pages to support the 'gate' property in the Flight entity.
+  - Altered search/new/list pages to support the 'status' property in the Flight entity.
+  - Numerous minor improvements on the list/new Flight pages (values order in drop-downs, sorting order in the list etc).
 --------------
 Izvod 0.8 / API 00.062
 - API
   - Improved DELETE and VERSION responses - a DTO is now used instead of plain String.
 - GUI
-  - Minor renamings.
+  - Minor renaming.
 --------------
 Izvod 0.75 / API 00.06
 - API

@@ -2,13 +2,9 @@ package com.aerotravel.flightticketbooking.controller;
 
 import com.aerotravel.flightticketbooking.model.Aircraft;
 import com.aerotravel.flightticketbooking.model.Airport;
-import com.aerotravel.flightticketbooking.model.Flight;
-import com.aerotravel.flightticketbooking.model.Passenger;
 import com.aerotravel.flightticketbooking.rest.v0.AircraftRestController;
 import com.aerotravel.flightticketbooking.services.AircraftService;
 import com.aerotravel.flightticketbooking.services.AirportService;
-import com.aerotravel.flightticketbooking.services.FlightService;
-import com.aerotravel.flightticketbooking.services.PassengerService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,16 +27,14 @@ import static java.util.Objects.requireNonNull;
 @Controller
 public class MainController {
 
+    public static final String ATTR_CURRENT_PAGE = "currentPage";
+    public static final String ATTR_MESSAGE = "message";
     @Autowired
     AirportService airportService;
     @Autowired
     AircraftService aircraftService;
     @Autowired
     AircraftRestController aircraftRestController;
-    @Autowired
-    FlightService flightService;
-    @Autowired
-    PassengerService passengerService;
 
     @GetMapping("/")
     public String showHomePage() {
@@ -92,7 +83,7 @@ public class MainController {
         log.info("About to save airport={}", airport.getAirportName());
         airportService.save(airport);
         model.addAttribute("airports", airportService.getAllPaged(0));
-        model.addAttribute("currentPage", 0);
+        model.addAttribute(ATTR_CURRENT_PAGE, 0);
         return "airports";
     }
 
@@ -101,7 +92,7 @@ public class MainController {
         log.info("About to delete Airport Id={}", airportId);
         airportService.deleteById(airportId);
         model.addAttribute("airports", airportService.getAllPaged(0));
-        model.addAttribute("currentPage", 0);
+        model.addAttribute(ATTR_CURRENT_PAGE, 0);
         return "airports";
     }
 
@@ -109,7 +100,7 @@ public class MainController {
     public String showAirportsList(@RequestParam(defaultValue = "0") int pageNo, Model model) {
         log.info("About to show airports");
         model.addAttribute("airports", airportService.getAllPaged(pageNo));
-        model.addAttribute("currentPage", pageNo);
+        model.addAttribute(ATTR_CURRENT_PAGE, pageNo);
         return "airports";
     }
 
@@ -132,7 +123,7 @@ public class MainController {
         log.info("About to save aircraft={}", aircraft.getModel());
         aircraftService.save(aircraft);
         model.addAttribute("aircrafts", aircraftService.getAllPaged(0));
-        model.addAttribute("currentPage", 0);
+        model.addAttribute(ATTR_CURRENT_PAGE, 0);
         return "aircrafts";
     }
 
@@ -170,7 +161,7 @@ public class MainController {
     public String showAircraftsList(@RequestParam(defaultValue = "0") int pageNo, Model model) {
         log.info("About to show aircraft list");
         model.addAttribute("aircrafts", aircraftService.getAllPaged(pageNo));
-        model.addAttribute("currentPage", pageNo);
+        model.addAttribute(ATTR_CURRENT_PAGE, pageNo);
         return "aircrafts";
     }
 
@@ -184,226 +175,6 @@ public class MainController {
         }
 
         return showAircraftsList(0, model);
-    }
-
-    @GetMapping("/flight/new")
-    public String showNewFlightPage(Model model) {
-        log.info("Opening the New flight page");
-        model.addAttribute("flight", new Flight());
-        model.addAttribute("aircrafts", aircraftService.getAll());
-        model.addAttribute("airports", airportService.getAll());
-        return "newFlight";
-    }
-
-    @PostMapping("/flight/new")
-    public String saveFlight(@Valid @ModelAttribute("flight") Flight flight, BindingResult bindingResult,
-                             @RequestParam("departureAirport") long departureAirport,
-                             @RequestParam("destinationAirport") long destinationAirport,
-                             @RequestParam("aircraft") long aircraftId,
-                             @RequestParam("arrivalTime") String arrivalTime,
-                             @RequestParam("departureTime") String departureTime,
-                             Model model) {
-
-        log.info("About to save flight from {}/{} to {}/{}",
-                departureAirport, departureTime, destinationAirport, arrivalTime);
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("errors", bindingResult.getAllErrors());
-            model.addAttribute("flight", new Flight());
-            model.addAttribute("aircrafts", aircraftService.getAll());
-            model.addAttribute("airports", airportService.getAll());
-
-            log.info("Failed to save the flight:\n{}", flight);
-            return "newFlight";
-        }
-        if (departureAirport == destinationAirport) {
-            model.addAttribute("sameAirportError", "Departure and destination airport can't be same");
-            model.addAttribute("flight", new Flight());
-            model.addAttribute("aircrafts", aircraftService.getAll());
-            model.addAttribute("airports", airportService.getAll());
-            return "newFlight";
-        }
-
-        flight.setAircraft(aircraftService.getById(aircraftId));
-        flight.setDepartureAirport(airportService.getById(departureAirport));
-        flight.setDestinationAirport(airportService.getById(destinationAirport));
-        flight.setDepartureTime(departureTime);
-        flight.setArrivalTime(arrivalTime);
-        log.info("About to save the flight:\n{}", flight);
-        flightService.save(flight);
-
-        model.addAttribute("flights", flightService.getAllPaged(0));
-        model.addAttribute("currentPage", 0);
-        return "flights";
-    }
-
-    @GetMapping("/flight/delete")
-    public String deleteFlight(@PathParam("flightId") long flightId, Model model) {
-        log.info("About to delete the flight, id={}", flightId);
-        flightService.deleteById(flightId);
-        model.addAttribute("flights", flightService.getAllPaged(0));
-        model.addAttribute("currentPage", 0);
-        return "flights";
-    }
-
-    @GetMapping("/flights")
-    public String showFlightsList(@RequestParam(defaultValue = "0") int pageNo, Model model) {
-        log.info("About to show the list of flights");
-        model.addAttribute("flights", flightService.getAllPaged(pageNo));
-        model.addAttribute("currentPage", pageNo);
-        return "flights";
-    }
-
-    @GetMapping("/flights_list")
-    public String showSimpleFlightsList(@RequestParam(defaultValue = "0") int pageNo, Model model) {
-        log.info("About to show the simple list of flights");
-        model.addAttribute("flights", flightService.getAllPaged(pageNo));
-        model.addAttribute("currentPage", pageNo);
-        return "flights_list";
-    }
-
-    @GetMapping("/flight/search")
-    public String showSearchFlightPage(Model model) {
-        log.info("About to show the search flights page");
-        model.addAttribute("airports", airportService.getAll());
-        model.addAttribute("flights", null);
-        return "searchFlight";
-    }
-
-    @PostMapping("/flight/search")
-    public String searchFlight(@RequestParam("departureAirport") long departureAirport,
-                               @RequestParam("destinationAirport") long destinationAirport,
-                               @RequestParam("departureTime") String departureTime,
-                               Model model) {
-        log.info("About to search for a flight from {} to {} on {}", departureAirport, destinationAirport, departureTime);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate deptTime = LocalDate.parse(departureTime, dtf);
-        Airport depAirport = airportService.getById(departureAirport);
-        Airport destAirport = airportService.getById(destinationAirport);
-
-        if (departureAirport == destinationAirport) {
-            model.addAttribute("AirportError", "Departure and destination airport cant be same!");
-            model.addAttribute("airports", airportService.getAll());
-            return "searchFlight";
-        }
-        List<Flight> flights = flightService.getAllByAirportAndDepartureTime(depAirport, destAirport, deptTime);
-        if (flights.isEmpty()) {
-            log.info("No flights were found from {} to {} on {}", departureAirport, destinationAirport, departureTime);
-            model.addAttribute("notFound", "No Record Found!");
-        } else {
-            model.addAttribute("flights", flights);
-        }
-
-        model.addAttribute("airports", airportService.getAll());
-        return "searchFlight";
-    }
-
-    @GetMapping("/flight/book")
-    public String showBookFlightPage(Model model) {
-        log.info("About to show the flight page");
-        model.addAttribute("airports", airportService.getAll());
-        return "bookFlight";
-    }
-
-    @PostMapping("/flight/book")
-    public String searchFlightToBook(@RequestParam("departureAirport") long departureAirport,
-                                     @RequestParam("destinationAirport") long destinationAirport,
-                                     @RequestParam("departureTime") String departureTime,
-                                     Model model) {
-        log.info("About to book a flight from {} to {} on {}", departureAirport, destinationAirport, departureTime);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate deptTime = LocalDate.parse(departureTime, dtf);
-        Airport depAirport = airportService.getById(departureAirport);
-        Airport destAirport = airportService.getById(destinationAirport);
-
-        if (departureAirport == destinationAirport) {
-            model.addAttribute("AirportError", "Departure and destination airport cant be same!");
-            model.addAttribute("airports", airportService.getAll());
-            return "bookFlight";
-        }
-        List<Flight> flights = flightService.getAllByAirportAndDepartureTime(depAirport, destAirport, deptTime);
-        if (flights.isEmpty()) {
-            log.info("No flights were found from {} to {} on {}", departureAirport, destinationAirport, departureTime);
-            model.addAttribute("notFound", "No Record Found!");
-        } else {
-            model.addAttribute("flights", flights);
-        }
-        model.addAttribute("airports", airportService.getAll());
-        return "bookFlight";
-    }
-
-    @GetMapping("/flight/book/new")
-    public String showCustomerInfoPage(@RequestParam long flightId, Model model) {
-        log.info("About to show the new passenger page");
-        model.addAttribute("flightId", flightId);
-        model.addAttribute("passenger", new Passenger());
-        return "newPassenger";
-    }
-
-    @PostMapping("/flight/book/new")
-    public String bookFlight(@Valid @ModelAttribute("passenger") Passenger passenger,
-                             BindingResult bindingResult,
-                             @RequestParam("flightId") long flightId, Model model) {
-        log.info("About to book a ticket for flight {}", flightId);
-        Flight flight = flightService.getById(flightId);
-        Passenger passenger1 = passenger;
-        passenger1.setFlight(flight);
-        passengerService.save(passenger1);
-        model.addAttribute("passenger", passenger1);
-        return "confirmationPage";
-    }
-
-    @GetMapping("/flight/book/verify")
-    public String showVerifyBookingPage() {
-        log.info("Navigating to the page to verify bookings");
-        return "verifyBooking";
-    }
-
-    @PostMapping("/flight/book/verify")
-    public String showVerifyBookingPageResult(@RequestParam("flightId") long flightId,
-                                              @RequestParam("passengerId") long passengerId,
-                                              Model model) {
-        log.info("About to verify booking for flight={} and passenger={}", flightId, passengerId);
-        var flightOptional = flightService.getOptionallyById(flightId);
-        if (flightOptional.isPresent()) {
-            var flight = flightOptional.get();
-            model.addAttribute("flight", flight);
-            var passengers = flight.getPassengers();
-            Passenger passenger = null;
-            for (Passenger p : passengers) {
-                if (p.getPassengerId() == passengerId) {
-                    passenger = passengerService.getById(passengerId);
-                    model.addAttribute("passenger", passenger);
-                }
-            }
-            if (passenger == null) {
-                log.info("No passengers were found for flight={} with Id={}", flightId, passengerId);
-                model.addAttribute("notFound", "Passenger " + passengerId + " was Not Found");
-            }
-        } else {
-            log.info("No bookings were found for flight={} with Id={}", flightId, passengerId);
-            model.addAttribute("notFound", "Flight " + flightId + " was Not Found");
-        }
-        return "verifyBooking";
-
-    }
-
-    @PostMapping("/flight/book/cancel")
-    public String cancelTicket(@RequestParam("passengerId") long passengerId, Model model) {
-        log.info("About to cancel a booking for passenger {}", passengerId);
-        passengerService.deleteById(passengerId);
-        model.addAttribute("flights", flightService.getAllPaged(0));
-        model.addAttribute("currentPage", 0);
-        return "flights";
-    }
-
-    @GetMapping("passengers")
-    public String showPassengerList(@RequestParam long flightId, Model model) {
-        log.info("About to show the list of passengers for flights {}", flightId);
-        List<Passenger> passengers = flightService.getById(flightId).getPassengers();
-        model.addAttribute("passengers", passengers);
-        model.addAttribute("flight", flightService.getById(flightId));
-        return "passengers";
     }
 
     @GetMapping("/login")

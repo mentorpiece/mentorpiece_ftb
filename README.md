@@ -7,6 +7,7 @@ Many thanks to the authors of the original code.
 
 1. Framework: Spring Boot
 2. Database: MySQL
+3. JAVA: 17
 
 Hibernate, Thymeleaf, Spring Boot Security, Thymeleaf Dialect, JPA, API Docs
 
