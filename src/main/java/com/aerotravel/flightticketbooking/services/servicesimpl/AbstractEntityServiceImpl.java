@@ -12,7 +12,7 @@ import java.util.Optional;
 
 abstract class AbstractEntityServiceImpl<E> implements EntityService<E> {
 
-    private static final int PAGE_SIZE = 5;
+    private static final int PAGE_SIZE = 10;
 
     protected abstract JpaRepository<E, Long> getRepository();
 

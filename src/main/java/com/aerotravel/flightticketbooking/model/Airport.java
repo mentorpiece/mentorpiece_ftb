@@ -8,8 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +40,10 @@ public class Airport implements Comparable<Airport>{
     private String state;
     @Size(max = 300)
     private String country;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User owner;
 
     public Airport(String airportCode, String airportName, String city, String state, String country) {
         this.airportCode = airportCode;

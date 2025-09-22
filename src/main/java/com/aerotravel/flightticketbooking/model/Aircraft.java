@@ -8,10 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +40,10 @@ public class Aircraft implements Comparable<Aircraft>{
     @Builder.Default
     @JsonManagedReference("aircraft-flights")
     private List<Flight> flights = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User owner;
 
     public Aircraft(String manufacturer, String model, Integer numberOfSeats) {
         this.manufacturer = manufacturer;

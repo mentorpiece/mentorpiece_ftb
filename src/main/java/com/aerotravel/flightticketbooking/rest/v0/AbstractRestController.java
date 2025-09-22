@@ -11,20 +11,21 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 @Slf4j
 @Validated
@@ -81,6 +82,7 @@ public abstract class AbstractRestController<E, D extends IdedEntity> {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Attempt to create an entity by using its DTO.")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<D> create(@Valid @RequestBody D entityDto) {
         log.info("Attempting to create a {} record. {}", getEntityClass().getSimpleName(), entityDto);
         return new ResponseEntity<>(convertToDto(getService()
@@ -89,6 +91,7 @@ public abstract class AbstractRestController<E, D extends IdedEntity> {
 
     @PutMapping("/{id}")
     @Operation(summary = "Attempt to update an entity by using its DTO.")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<D> update(@Valid @RequestBody D entityDto, @PathVariable Long id) {
         log.info("Attempting to update the {} record. {}", getEntityClass().getSimpleName(), entityDto);
         if (entityDto.getId() != id) {
@@ -113,6 +116,7 @@ public abstract class AbstractRestController<E, D extends IdedEntity> {
                     "    \"value\":\"001-321-5478\"\n</br>" +
                     "}]" +
                     "</br> </pre>")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<D> partialUpdate(@PathVariable Long id, @RequestBody JsonPatch patch) {
         try {
             log.info("Attempting to do partial update of {} record {}. Operation: \n{}",
@@ -135,6 +139,7 @@ public abstract class AbstractRestController<E, D extends IdedEntity> {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Attempt to delete an entity by its id.")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
         log.info("Attempting to delete record {}", id);
         // Check whether it exists at all.

@@ -8,4 +8,12 @@ public interface UserService extends UserDetailsService, EntityService<User> {
     default EntityNotFoundException buildEntityNotFoundException(long id) {
         return buildEntityNotFoundException("User", id);
     }
+
+    User registerNewUser(User user);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+    User getCurrentUser();
+    User switchUserRole(String roleName);
+    boolean canSwitchToRole(String roleName);
+    User getUserByUsername(String username);
 }

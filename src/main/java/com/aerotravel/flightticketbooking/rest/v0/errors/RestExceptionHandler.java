@@ -17,9 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,27 +26,24 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
-public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+public class RestExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
         log.error("Something went wrong upon handling the request: {}", request, ex);
         var error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(),
                 "Server Error", findAllCauses(ex));
-        return handleExceptionInternal(ex, error,
-                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @Override
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
         log.error("Something was not valid upon handling the request: {}", request, ex);
         var details = getDetails(ex.getBindingResult());
         var error = new ErrorResponse(HttpStatus.BAD_REQUEST + " - BAD, BAD REQUEST",
                 "Validation Failed", details);
-        return handleExceptionInternal(ex, error,
-                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({EntityNotFoundException.class})
@@ -57,16 +53,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         var details = List.of(ex.getLocalizedMessage());
         var error = new ErrorResponse(HttpStatus.NOT_FOUND.toString(),
                 "Entity not found.", details);
-        return handleExceptionInternal(ex, error,
-                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class, HttpMessageConversionException.class})
     public ResponseEntity<Object> handleBadRequest(Exception ex, WebRequest request) {
         log.error("Something was violated upon handling the request: {}", request, ex);
         var error = new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), ex.getMessage(), findAllCauses(ex));
-        return handleExceptionInternal(ex, error,
-                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ResponseBody
@@ -101,14 +95,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return result;
     }
 
-    @Override
+    @ExceptionHandler({BindException.class})
     protected ResponseEntity<Object> handleBindException(
-            BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            BindException ex, WebRequest request) {
         log.error("Something was not binded right upon handling the request: {}", request, ex);
         var details = getDetails(ex.getBindingResult());
-        var error = new ErrorResponse(status.toString(), ex.getMessage(), details);
+        var error = new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), ex.getMessage(), details);
 
-        return handleExceptionInternal(ex, error, headers, status, request);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     private List<String> getDetails(BindingResult ex) {

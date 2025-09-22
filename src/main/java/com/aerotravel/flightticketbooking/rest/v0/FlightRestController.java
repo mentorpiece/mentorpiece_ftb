@@ -18,10 +18,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,14 +69,20 @@ public class FlightRestController extends AbstractRestController<Flight, FlightD
         val aircraft = aircraftService.getOptionallyById(entityDto.getAircraftId())
                 .orElseThrow(() -> new IllegalArgumentException("Could not find aircraft Id=" + entityDto.getAircraftId()));
         candidate.setAircraft(aircraft);
-        candidate.setPassengers(passengerService.getAllById(entityDto.getPassengerIds()));
+
+        // Validate passenger ownership
+        List<Passenger> passengers = new ArrayList<>();
+        for (Long passengerId : entityDto.getPassengerIds()) {
+            passengers.add(passengerService.getById(passengerId)); // This validates ownership
+        }
+        candidate.setPassengers(passengers);
 
         if (null != entityDto.getDepartureAirportCode()) {
-            var depAirport = airportService.getByCode(entityDto.getDepartureAirportCode());
+            var depAirport = airportService.getCurrentUserAirportByCode(entityDto.getDepartureAirportCode());
             candidate.setDepartureAirport(depAirport);
         }
         if (null != entityDto.getDestinationAirportCode()) {
-            var destAirport = airportService.getByCode(entityDto.getDestinationAirportCode());
+            var destAirport = airportService.getCurrentUserAirportByCode(entityDto.getDestinationAirportCode());
             candidate.setDestinationAirport(destAirport);
         }
 
@@ -145,10 +152,10 @@ public class FlightRestController extends AbstractRestController<Flight, FlightD
     }
 
     @GetMapping("/number/{flightNumber}")
-    @Operation(summary = "Attempt to get a flight by its number.")
+    @Operation(summary = "Attempt to get current user's flights by flight number.")
     public ResponseEntity<List<FlightDto>> findByFlightNumber(@PathVariable String flightNumber) {
-        log.info("Searching for flights by number={}", flightNumber);
-        return ResponseEntity.ok(flightService.getAllByByFlightNumber(flightNumber)
+        log.info("Searching for current user's flights by number={}", flightNumber);
+        return ResponseEntity.ok(flightService.getCurrentUserFlightsByFlightNumber(flightNumber)
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList()));
@@ -161,19 +168,19 @@ public class FlightRestController extends AbstractRestController<Flight, FlightD
             @RequestParam("departureAirportCode") String departureAirportCode,
             @RequestParam("destinationAirportCode") String destinationAirportCode,
             @RequestParam(value = "departureDate", defaultValue = "2023-01-01") String departureDate) {
-        log.info("Searching for flights from {} to {} on {}.", departureAirportCode, destinationAirportCode, departureDate);
-        var depAirport = airportService.getByCode(departureAirportCode);
-        var destAirport = airportService.getByCode(destinationAirportCode);
+        log.info("Searching for current user's flights from {} to {} on {}.", departureAirportCode, destinationAirportCode, departureDate);
+        var depAirport = airportService.getCurrentUserAirportByCode(departureAirportCode);
+        var destAirport = airportService.getCurrentUserAirportByCode(destinationAirportCode);
 
         if (null != departureDate && departureDate.length() > 9) {
             var deptDate = LocalDate.parse(departureDate, DATE_TIME_FORMATTER);
 
-            return ResponseEntity.ok(flightService.getAllByAirportAndDepartureTime(depAirport, destAirport, deptDate)
+            return ResponseEntity.ok(flightService.getCurrentUserFlightsByAirportAndDepartureTime(depAirport, destAirport, deptDate)
                     .stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList()));
         } else {
-            return ResponseEntity.ok(flightService.getAllByAirports(depAirport, destAirport)
+            return ResponseEntity.ok(flightService.getCurrentUserFlightsByAirports(depAirport, destAirport)
                     .stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList()));

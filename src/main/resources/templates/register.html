@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<!-- layout:decorate="~{layout/master-page}">-->
+<head>
+    <title>Register</title>
+    <meta charset="UTF-8">
+    <div th:replace="layout/master-page :: header-css"/>
+    <style type="text/css"></style>
+</head>
+<body>
+<div class="header" th:replace="layout/master-page :: header"/>
+<div class="container">
+    <th:block layout:fragment="content">
+        <div class="row justify-content-md-center">
+            <div class="col-md-6 jumbotron">
+                <h2 style="text-align: center">Registration Form</h2>
+
+                <form method="post" th:action="@{/register}" th:object="${user}">
+                    <div class="alert alert-dismissible alert-danger" th:if="${error}">
+                        <button class="close" data-dismiss="alert" type="button">&times;</button>
+                        <span th:text="${error}"></span>
+                    </div>
+                    <div class="alert alert-dismissible alert-success" th:if="${param.registered}">
+                        <button class="close" data-dismiss="alert" type="button">&times;</button>
+                        Registration successful! Please log in.
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="firstname">First Name <span class="text-danger">*</span></label>
+                                <input class="form-control" id="firstname" th:field="*{firstname}" type="text"/>
+                                <span class="text-danger" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="lastname">Last Name <span class="text-danger">*</span></label>
+                                <input class="form-control" id="lastname" th:field="*{lastname}" type="text"/>
+                                <span class="text-danger" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="middlename">Middle Name</label>
+                        <input class="form-control" id="middlename" th:field="*{middlename}" type="text"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username">Username <span class="text-danger">*</span></label>
+                        <input class="form-control" id="username" th:field="*{username}" type="text"/>
+                        <span class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                        <span class="text-danger" th:if="${usernameError}" th:text="${usernameError}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email <span class="text-danger">*</span></label>
+                        <input class="form-control" id="email" th:field="*{email}" type="email"/>
+                        <span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                        <span class="text-danger" th:if="${emailError}" th:text="${emailError}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password <span class="text-danger">*</span></label>
+                        <input class="form-control" id="password" th:field="*{password}" type="password"/>
+                        <span class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                        <small class="form-text text-muted">Password must be at least 8 characters long.</small>
+                    </div>
+
+                    <div style="float:right; margin-top: 20px;">
+                        <a class="btn btn-outline-warning" href="/login">Back to Login</a>&nbsp;&nbsp;&nbsp;
+                        <button class="btn btn-outline-success" type="submit">Register</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <p>Already have an account? <a href="/login">Sign in here</a></p>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +17,7 @@
             <div class="col-md-6">
                 <h1 style="color: darkblue">Flights List </h1>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" sec:authorize="hasRole('ADMIN')">
                 <a href="/flight/new">
                     <button id = "btnNewFlights" class="btn btn-outline-primary" style="float: right" type="button">Add Flight</button>
                 </a>
@@ -55,13 +56,15 @@
                     <td th:text="${flight.aircraft.model}"></td>
                     <td th:text="${flight.aircraft.numberOfSeats - flight.passengers.size() +'/'+ flight.aircraft.numberOfSeats}"></td>
                     <td><a th:href="@{/passengers(flightId=${flight.flightId})}">...</a></td>
-                    <td><a th:href="@{/flight/delete(flightId=${flight.flightId})}">
-                        <button name="Cancel flight"
-                                class="btn btn-outline-danger btn-sm"
-                                onclick="alert('Are you sure to cancel this flight?')"
-                                type="button">Cancel
-                        </button>
-                    </a></td>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <a th:href="@{/flight/delete(flightId=${flight.flightId})}">
+                            <button name="Cancel flight"
+                                    class="btn btn-outline-danger btn-sm"
+                                    onclick="alert('Are you sure to cancel this flight?')"
+                                    type="button">Cancel
+                            </button>
+                        </a>
+                    </td>
                 </tr>
             </div>
             </tbody>

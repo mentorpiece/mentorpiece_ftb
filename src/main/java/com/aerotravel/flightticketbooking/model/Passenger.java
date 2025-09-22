@@ -8,10 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Data
@@ -46,6 +46,10 @@ public class Passenger {
     @ManyToOne
     @JsonBackReference("flight-passengers")
     private Flight flight;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User owner;
 
     public Passenger(String firstName, String lastName, String phoneNumber, String passportNumber, String email, String address) {
         this.firstName = firstName;

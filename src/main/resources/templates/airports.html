@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +17,7 @@
             <div class="col-md-6">
                 <h1 style="color: darkblue">Airports List </h1>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6" sec:authorize="hasRole('ADMIN')">
                 <a href="/airport/new">
                     <button id = "btnNewAirport" class="btn btn-outline-primary" style="float: right" type="button">Add Airport</button>
                 </a>
@@ -44,17 +45,21 @@
                     <td th:text="${airport.city}"></td>
                     <td th:text="${airport.state}"></td>
                     <td th:text="${airport.country}"></td>
-                    <td><a th:href="@{/airport/delete(airportId=${airport.airportId})}">
-                        <button class="btn btn-outline-danger btn-sm"
-                                onclick="alert('are you sure you want to delete?')"
-                                type="button">Delete
-                        </button>
-                    </a></td>
-                    <td><a th:href="@{/airport/edit(airportId=${airport.airportId})}">
-                        <button class="btn btn-outline-secondary btn-sm"
-                                type="button">Edit
-                        </button>
-                    </a></td>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <a th:href="@{/airport/edit(airportId=${airport.airportId})}">
+                            <button class="btn btn-outline-secondary btn-sm"
+                                    type="button">Edit
+                            </button>
+                        </a>
+                    </td>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <a th:href="@{/airport/delete(airportId=${airport.airportId})}">
+                            <button class="btn btn-outline-danger btn-sm"
+                                    onclick="alert('are you sure you want to delete?')"
+                                    type="button">Delete
+                            </button>
+                        </a>
+                    </td>
                 </tr>
             </div>
             </tbody>

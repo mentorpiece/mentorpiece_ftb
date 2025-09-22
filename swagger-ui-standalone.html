@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Ticket Booking API Documentation</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui.css" />
+    <style>
+        html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+        body {
+            margin:0;
+            background: #fafafa;
+        }
+    </style>
+</head>
+<body>
+    <div id="swagger-ui"></div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui-standalone-preset.js"></script>
+
+    <script>
+        window.onload = function() {
+            const ui = SwaggerUIBundle({
+                spec: {
+                  "openapi": "3.0.1",
+                  "info": {
+                    "title": "Flight Ticket Booking API",
+                    "contact": {
+                      "name": "FTB API Support",
+                      "url": "https://mentorpiece.org",
+                      "email": "1@mentorpiece.org"
+                    },
+                    "version": "00.07"
+                  },
+                  "servers": [
+                    {
+                      "url": "http://localhost:8080",
+                      "description": "Generated server url"
+                    }
+                  ],
+                  "security": [
+                    {
+                      "bearerAuth": []
+                    },
+                    {
+                      "basicAuth": []
+                    },
+                    {
+                      "sessionCookie": []
+                    }
+                  ],
+                  "tags": [
+                    {
+                      "name": "JWT Authentication",
+                      "description": "OAuth 2.0 Bearer Token Authentication API"
+                    },
+                    {
+                      "name": "Aircraft",
+                      "description": "Aircraft resource"
+                    },
+                    {
+                      "name": "Airport",
+                      "description": "Airport resource, CRUD operations"
+                    },
+                    {
+                      "name": "Flight",
+                      "description": "Flight resource. Flight booking is possible as well!"
+                    },
+                    {
+                      "name": "Passenger",
+                      "description": "Passenger resource."
+                    },
+                    {
+                      "name": "User",
+                      "description": "User resource. CRUD+ operations."
+                    },
+                    {
+                      "name": "Debug",
+                      "description": "Debug assistance"
+                    },
+                    {
+                      "name": "Data generator",
+                      "description": "Generate additional fresh fake data for testing purposes."
+                    },
+                    {
+                      "name": "Version",
+                      "description": "This is the way to get app/API version info."
+                    }
+                  ],
+                  "paths": {
+                    "/api/auth/login": {
+                      "post": {
+                        "tags": ["JWT Authentication"],
+                        "summary": "Authenticate user and get JWT tokens",
+                        "description": "Login with username/password to receive Bearer tokens for API access",
+                        "operationId": "authenticate",
+                        "requestBody": {
+                          "content": {
+                            "application/json": {
+                              "schema": {
+                                "$ref": "#/components/schemas/AuthenticationRequest"
+                              }
+                            }
+                          },
+                          "required": true
+                        },
+                        "responses": {
+                          "200": {
+                            "description": "Authentication successful",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "$ref": "#/components/schemas/AuthenticationResponse"
+                                }
+                              }
+                            }
+                          },
+                          "400": {
+                            "description": "Invalid request",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                              }
+                            }
+                          },
+                          "401": {
+                            "description": "Invalid credentials",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "type": "object"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "/api/auth/refresh": {
+                      "post": {
+                        "tags": ["JWT Authentication"],
+                        "summary": "Refresh JWT token",
+                        "description": "Use refresh token to get new access token",
+                        "operationId": "refreshToken",
+                        "security": [
+                          {
+                            "bearerAuth": []
+                          }
+                        ],
+                        "responses": {
+                          "200": {
+                            "description": "Token refreshed successfully"
+                          },
+                          "401": {
+                            "description": "Invalid refresh token"
+                          }
+                        }
+                      }
+                    },
+                    "/api/auth/me": {
+                      "get": {
+                        "tags": ["JWT Authentication"],
+                        "summary": "Get current user info",
+                        "description": "Get current authenticated user information",
+                        "operationId": "getCurrentUser",
+                        "security": [
+                          {
+                            "bearerAuth": []
+                          }
+                        ],
+                        "responses": {
+                          "200": {
+                            "description": "User info retrieved successfully"
+                          },
+                          "401": {
+                            "description": "Authentication required"
+                          }
+                        }
+                      }
+                    },
+                    "/api/auth/logout": {
+                      "post": {
+                        "tags": ["JWT Authentication"],
+                        "summary": "Logout",
+                        "description": "Invalidate current session (for session-based auth)",
+                        "operationId": "logout",
+                        "security": [
+                          {
+                            "bearerAuth": []
+                          }
+                        ],
+                        "responses": {
+                          "200": {
+                            "description": "Logged out successfully"
+                          }
+                        }
+                      }
+                    },
+                    "/api/switch-role": {
+                      "post": {
+                        "tags": ["auth-controller"],
+                        "summary": "Switch user role",
+                        "description": "Switch the current user's active role to one of their available roles",
+                        "operationId": "switchRole",
+                        "parameters": [
+                          {
+                            "name": "role",
+                            "in": "query",
+                            "description": "Role name (ROLE_USER, ROLE_ADMIN, ROLE_AGENT)",
+                            "required": true,
+                            "schema": {
+                              "type": "string"
+                            }
+                          }
+                        ],
+                        "responses": {
+                          "200": {
+                            "description": "OK",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "400": {
+                            "description": "Bad Request",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "security": [
+                          {
+                            "basicAuth": []
+                          },
+                          {
+                            "sessionCookie": []
+                          }
+                        ]
+                      }
+                    },
+                    "/api/current-user": {
+                      "get": {
+                        "tags": ["auth-controller"],
+                        "summary": "Get current user information",
+                        "description": "Get current authenticated user's information including roles",
+                        "operationId": "getCurrentUserJson",
+                        "responses": {
+                          "200": {
+                            "description": "OK",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "400": {
+                            "description": "Bad Request",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "security": [
+                          {
+                            "basicAuth": []
+                          },
+                          {
+                            "sessionCookie": []
+                          }
+                        ]
+                      }
+                    },
+                    "/api/fix-user-roles": {
+                      "post": {
+                        "tags": ["auth-controller"],
+                        "summary": "Fix user roles",
+                        "description": "Administrative endpoint to fix user role assignments",
+                        "operationId": "fixUserRoles",
+                        "responses": {
+                          "200": {
+                            "description": "OK",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "object"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "400": {
+                            "description": "Bad Request",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "/api/v0/aircrafts": {
+                      "get": {
+                        "tags": ["Aircraft"],
+                        "summary": "Get all aircraft entities",
+                        "operationId": "findAllAircrafts",
+                        "responses": {
+                          "200": {
+                            "description": "OK",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "type": "array",
+                                  "items": {
+                                    "$ref": "#/components/schemas/AircraftDto"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "post": {
+                        "tags": ["Aircraft"],
+                        "summary": "Create new aircraft",
+                        "operationId": "createAircraft",
+                        "requestBody": {
+                          "content": {
+                            "application/json": {
+                              "schema": {
+                                "$ref": "#/components/schemas/AircraftDto"
+                              }
+                            }
+                          },
+                          "required": true
+                        },
+                        "responses": {
+                          "201": {
+                            "description": "Created",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "$ref": "#/components/schemas/AircraftDto"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "/api/v0/aircrafts/{id}": {
+                      "get": {
+                        "tags": ["Aircraft"],
+                        "summary": "Get aircraft by ID",
+                        "operationId": "findAircraftById",
+                        "parameters": [
+                          {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                              "type": "integer",
+                              "format": "int64"
+                            }
+                          }
+                        ],
+                        "responses": {
+                          "200": {
+                            "description": "OK",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "$ref": "#/components/schemas/AircraftDto"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "put": {
+                        "tags": ["Aircraft"],
+                        "summary": "Update aircraft",
+                        "operationId": "updateAircraft",
+                        "parameters": [
+                          {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                              "type": "integer",
+                              "format": "int64"
+                            }
+                          }
+                        ],
+                        "requestBody": {
+                          "content": {
+                            "application/json": {
+                              "schema": {
+                                "$ref": "#/components/schemas/AircraftDto"
+                              }
+                            }
+                          },
+                          "required": true
+                        },
+                        "responses": {
+                          "200": {
+                            "description": "OK",
+                            "content": {
+                              "*/*": {
+                                "schema": {
+                                  "$ref": "#/components/schemas/AircraftDto"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "delete": {
+                        "tags": ["Aircraft"],
+                        "summary": "Delete aircraft",
+                        "operationId": "deleteAircraft",
+                        "parameters": [
+                          {
+                            "name": "id",
+                            "in": "path",
+                            "required": true,
+                            "schema": {
+                              "type": "integer",
+                              "format": "int64"
+                            }
+                          }
+                        ],
+                        "responses": {
+                          "200": {
+                            "description": "OK"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "components": {
+                    "securitySchemes": {
+                      "basicAuth": {
+                        "type": "http",
+                        "scheme": "basic",
+                        "description": "Basic authentication using username and password"
+                      },
+                      "bearerAuth": {
+                        "type": "http",
+                        "scheme": "bearer",
+                        "bearerFormat": "JWT",
+                        "description": "JWT Bearer token authentication"
+                      },
+                      "sessionCookie": {
+                        "type": "apiKey",
+                        "in": "cookie",
+                        "name": "JSESSIONID",
+                        "description": "Session cookie authentication (login via /login form first)"
+                      }
+                    },
+                    "schemas": {
+                      "AuthenticationRequest": {
+                        "type": "object",
+                        "required": ["username", "password"],
+                        "properties": {
+                          "username": {
+                            "type": "string",
+                            "description": "Username",
+                            "example": "john"
+                          },
+                          "password": {
+                            "type": "string",
+                            "description": "Password", 
+                            "example": "admin123"
+                          }
+                        },
+                        "description": "Authentication request"
+                      },
+                      "AuthenticationResponse": {
+                        "type": "object",
+                        "properties": {
+                          "accessToken": {
+                            "type": "string",
+                            "description": "JWT access token",
+                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                          },
+                          "refreshToken": {
+                            "type": "string", 
+                            "description": "JWT refresh token",
+                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                          },
+                          "tokenType": {
+                            "type": "string",
+                            "description": "Token type",
+                            "example": "Bearer"
+                          },
+                          "expiresIn": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Token expiration time in seconds",
+                            "example": 86400
+                          },
+                          "user": {
+                            "$ref": "#/components/schemas/UserInfo"
+                          }
+                        },
+                        "description": "Authentication response with JWT tokens"
+                      },
+                      "UserInfo": {
+                        "type": "object",
+                        "properties": {
+                          "username": {
+                            "type": "string",
+                            "description": "Username", 
+                            "example": "john"
+                          },
+                          "email": {
+                            "type": "string",
+                            "description": "Email",
+                            "example": "john@ftb.com"
+                          },
+                          "firstName": {
+                            "type": "string",
+                            "description": "First name",
+                            "example": "John"
+                          },
+                          "lastName": {
+                            "type": "string", 
+                            "description": "Last name",
+                            "example": "Doe"
+                          },
+                          "currentRole": {
+                            "type": "string",
+                            "description": "Current active role", 
+                            "example": "ROLE_ADMIN"
+                          },
+                          "roles": {
+                            "type": "array",
+                            "description": "Available roles",
+                            "items": {
+                              "type": "string"
+                            },
+                            "example": ["ROLE_USER", "ROLE_ADMIN"]
+                          }
+                        },
+                        "description": "User information"
+                      },
+                      "ErrorResponse": {
+                        "type": "object",
+                        "properties": {
+                          "timestamp": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "details": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                requestInterceptor: function(request) {
+                    // Add JWT token to requests if available
+                    const token = localStorage.getItem('jwt_token');
+                    if (token && !request.headers.Authorization) {
+                        request.headers.Authorization = 'Bearer ' + token;
+                    }
+                    return request;
+                },
+                responseInterceptor: function(response) {
+                    // Store JWT token from login response
+                    if (response.url.includes('/api/auth/login') && response.status === 200) {
+                        try {
+                            const data = JSON.parse(response.text);
+                            if (data.accessToken) {
+                                localStorage.setItem('jwt_token', data.accessToken);
+                                localStorage.setItem('refresh_token', data.refreshToken);
+                                console.log('JWT token stored successfully');
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse login response', e);
+                        }
+                    }
+                    return response;
+                }
+            });
+
+            // Add custom authentication helpers
+            window.ftbAuth = {
+                login: function(username, password) {
+                    return fetch('http://localhost:8080/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.accessToken) {
+                            localStorage.setItem('jwt_token', data.accessToken);
+                            localStorage.setItem('refresh_token', data.refreshToken);
+                            console.log('Authentication successful');
+                            return data;
+                        }
+                        throw new Error('Authentication failed');
+                    });
+                },
+                logout: function() {
+                    localStorage.removeItem('jwt_token');
+                    localStorage.removeItem('refresh_token');
+                    console.log('Logged out');
+                },
+                getToken: function() {
+                    return localStorage.getItem('jwt_token');
+                }
+            };
+
+            // Display authentication status and help
+            setTimeout(() => {
+                console.log('🔧 Flight Ticket Booking API Documentation');
+                console.log('==========================================');
+                console.log('');
+                console.log('📖 This is a standalone version that works without the app running!');
+                console.log('🔑 JWT Authentication Helper Functions:');
+                console.log('   ftbAuth.login("john", "admin123")  - Login and get JWT token');
+                console.log('   ftbAuth.getToken()                 - Check current token'); 
+                console.log('   ftbAuth.logout()                   - Clear stored tokens');
+                console.log('');
+                
+                const token = localStorage.getItem('jwt_token');
+                if (token) {
+                    console.log('✅ JWT Token available. You can use Bearer authentication.');
+                } else {
+                    console.log('ℹ️  No JWT token found. Use ftbAuth.login() to authenticate when the app is running.');
+                }
+                
+                console.log('');
+                console.log('👥 Default Test Users:');
+                console.log('   Admin: john/admin123 or adm/admin123');
+                console.log('   Agent: mike/password');
+                console.log('   User:  user/password');
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

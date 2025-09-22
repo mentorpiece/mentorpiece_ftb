@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -80,26 +80,26 @@ public class AircraftRestController extends AbstractRestController<Aircraft, Air
     }
 
     @GetMapping("/model/{modelName}")
-    @Operation(summary = "Attempt to get an aircraft by its model name.")
+    @Operation(summary = "Attempt to get current user's aircraft by model name.")
     @ApiResponse(responseCode = "200", description = "Found aircraft(s).",
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = AircraftDto.class))})
     public List<AircraftDto> findByModel(@PathVariable String modelName) {
-        log.info("Searching for aircrafts by model={}", modelName);
-        return aircraftService.getByModel(modelName)
+        log.info("Searching for current user's aircrafts by model={}", modelName);
+        return aircraftService.getCurrentUserAircraftByModel(modelName)
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/manufacturer/{manufacturerName}")
-    @Operation(summary = "Attempt to get an aircraft by its manufacturer name.")
+    @Operation(summary = "Attempt to get current user's aircraft by manufacturer name.")
     @ApiResponse(responseCode = "200", description = "Found aircraft(s).",
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = AircraftDto.class))})
     public List<AircraftDto> findByManufacturer(@PathVariable String manufacturerName) {
-        log.info("Searching for aircrafts by manufacturer={}", manufacturerName);
-        return aircraftService.getByManufacturer(manufacturerName)
+        log.info("Searching for current user's aircrafts by manufacturer={}", manufacturerName);
+        return aircraftService.getCurrentUserAircraftByManufacturer(manufacturerName)
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
