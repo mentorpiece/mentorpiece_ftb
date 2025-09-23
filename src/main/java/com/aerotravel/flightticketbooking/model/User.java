@@ -74,7 +74,7 @@ public class User {
     @Builder.Default
     private Boolean credentialsNonExpired = true;
 
-    @Column(nullable = false)
+    @Column(name = "`current_role`", nullable = false)
     @Builder.Default
     private String currentRole = "ROLE_AGENT";
 
