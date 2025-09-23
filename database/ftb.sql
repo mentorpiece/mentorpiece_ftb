@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `aircraft`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `aircraft` (
-  `aircraft_id` bigint(20) NOT NULL,
+  `aircraft_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `manufacturer` varchar(255) DEFAULT NULL,
   `model` varchar(255) DEFAULT NULL,
   `number_of_seats` int(11) DEFAULT NULL,
@@ -52,7 +52,7 @@ DROP TABLE IF EXISTS `airport`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `airport` (
-  `airport_id` int(11) NOT NULL,
+  `airport_id` int(11) NOT NULL AUTO_INCREMENT,
   `airport_code` varchar(255) DEFAULT NULL,
   `airport_name` varchar(255) DEFAULT NULL,
   `city` varchar(255) DEFAULT NULL,
@@ -83,7 +83,7 @@ DROP TABLE IF EXISTS `flight`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `flight` (
-  `flight_id` bigint(20) NOT NULL,
+  `flight_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `arrival_date` date DEFAULT NULL,
   `arrival_time` varchar(255) DEFAULT NULL,
   `departure_date` date DEFAULT NULL,
@@ -148,7 +148,7 @@ DROP TABLE IF EXISTS `passenger`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `passenger` (
-  `passenger_id` bigint(20) NOT NULL,
+  `passenger_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `address` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `first_name` varchar(255) DEFAULT NULL,
@@ -183,7 +183,7 @@ DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `roles` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_ofx66keruapi6vyqpv6f2or37` (`name`)
@@ -196,7 +196,7 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (1,'ROLE_ADMIN'),(2,'ROLE_AGENT');
+INSERT INTO `roles` (`id`,`name`) VALUES (1,'ROLE_ADMIN'),(2,'ROLE_AGENT');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,7 +208,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
   `firstname` varchar(255) NOT NULL,
   `lastname` varchar(255) NOT NULL,
@@ -232,7 +232,9 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'john@gmail.com','John','Doe',NULL,'$2a$10$dRM33.Fy7SYDraG5vMagXOgIhsB6Tl40VI9pwMlNhB4yfLaZpQj.m','john'),(2,'mike@gmail.com','Mike','Jacson',NULL,'$2a$10$vukSIdxmmtLYcy/uNMBUHeyj/qbNPcaX8lqTbXGciJ9HxaLQOmRO.','mike');
+INSERT INTO `users` (`id`,`email`,`firstname`,`lastname`,`middlename`,`password`,`username`) VALUES 
+(1,'john@gmail.com','John','Doe',NULL,'$2a$10$dRM33.Fy7SYDraG5vMagXOgIhsB6Tl40VI9pwMlNhB4yfLaZpQj.m','john'),
+(2,'mike@gmail.com','Mike','Jacson',NULL,'$2a$10$vukSIdxmmtLYcy/uNMBUHeyj/qbNPcaX8lqTbXGciJ9HxaLQOmRO.','mike');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -246,7 +248,7 @@ DROP TABLE IF EXISTS `users_roles`;
 CREATE TABLE `users_roles` (
   `user_id` int(11) NOT NULL,
   `role_id` int(11) NOT NULL,
-  PRIMARY KEY (`user_id`),
+  PRIMARY KEY (`user_id`,`role_id`),
   KEY `roles_users_roles_idx` (`role_id`),
   CONSTRAINT `roles_users_roles` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
   CONSTRAINT `users_users_roles` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)

@@ -1,0 +1,14 @@
+.git
+.gitignore
+node_modules
+npm-debug.log
+*.iml
+.idea
+.vscode
+target
+**/target
+localhost+8080
+swagger-ui-export.tar.gz
+cookies.txt
+*.log
+.env

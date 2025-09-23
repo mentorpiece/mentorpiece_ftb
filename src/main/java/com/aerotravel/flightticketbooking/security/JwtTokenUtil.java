@@ -18,10 +18,10 @@ import java.util.function.Function;
 @Slf4j
 public class JwtTokenUtil {
 
-    @Value("${jwt.secret:ftb-secret-key-2024-aero-travel-flight-ticket-booking-application-secure}")
+    @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration:86400}") // 24 hours in seconds
+    @Value("${jwt.expiration}") // 24 hours in seconds
     private int jwtExpiration;
 
     public String extractUsername(String token) {
