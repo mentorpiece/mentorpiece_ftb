@@ -1,0 +1,294 @@
+/* =============================================================================
+   FTB - CSS Variables & Design Tokens
+   Centralized design system variables for consistent styling
+   ============================================================================= */
+
+:root {
+  /* =============================================================================
+     BRAND COLORS
+     ============================================================================= */
+
+  /* Primary Colors */
+  --ftb-primary: #FB6B00;           /* Orange Accent - Main brand color */
+  --ftb-primary-light: #fc8533;    /* Light orange for hover states */
+  --ftb-primary-dark: #e5600a;     /* Dark orange for pressed states */
+
+  /* Secondary Colors */
+  --ftb-secondary: #007bff;        /* Primary Blue */
+  --ftb-accent: #28a745;           /* Success Green */
+
+  /* Neutral Colors */
+  --ftb-white: #ffffff;
+  --ftb-light-gray: #f8f9fa;      /* Body Background */
+  --ftb-gray: #e2e8f0;            /* Border color */
+  --ftb-dark-gray: #6c757d;
+  --ftb-black: #0f172a;
+
+  /* Text Colors */
+  --ftb-text-primary: #212529;    /* Primary text color */
+  --ftb-text-secondary: #6c757d;  /* Secondary text color */
+  --ftb-text-dark: #343a40;
+
+  /* Status Colors */
+  --ftb-success: #28a745;
+  --ftb-warning: #ffc107;
+  --ftb-error: #dc3545;           /* Error/Danger red */
+  --ftb-danger: #dc3545;
+  --ftb-info: #007bff;
+
+  /* =============================================================================
+     GRADIENTS
+     ============================================================================= */
+
+  --ftb-gradient-primary: linear-gradient(135deg, var(--ftb-primary) 0%, var(--ftb-primary-light) 100%);
+  --ftb-gradient-secondary: linear-gradient(135deg, var(--ftb-secondary) 0%, var(--ftb-accent) 100%);
+  --ftb-gradient-light: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --ftb-gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --ftb-gradient-hero: linear-gradient(135deg, var(--ftb-primary) 0%, var(--ftb-primary-light) 50%, var(--ftb-secondary) 100%);
+
+  /* =============================================================================
+     GLASSMORPHISM EFFECTS
+     ============================================================================= */
+
+  --ftb-glass-bg: rgba(255, 255, 255, 0.05);
+  --ftb-glass-bg-dark: rgba(255, 255, 255, 0.05);
+  --ftb-glass-bg-light: rgba(255, 255, 255, 0.25);
+  --ftb-glass-border: rgba(255, 255, 255, 0.18);
+  --ftb-glass-backdrop: blur(20px);
+
+  /* =============================================================================
+     CARD PROPERTIES
+     ============================================================================= */
+
+  --ftb-card-bg: #ffffff;
+  --ftb-card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --ftb-card-shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --ftb-card-border: 1px solid rgba(0, 0, 0, 0.05);
+
+  /* =============================================================================
+     NEOMORPHISM EFFECTS
+     ============================================================================= */
+
+  --ftb-neo-bg: #e0e5ec;
+  --ftb-neo-light: #ffffff;
+  --ftb-neo-dark: #a3b1c6;
+  --ftb-neo-inset: inset 5px 5px 10px #a3b1c6, inset -5px -5px 10px #ffffff;
+  --ftb-neo-outset: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
+
+  /* =============================================================================
+     SPACING SYSTEM
+     ============================================================================= */
+
+  --ftb-spacing-xs: 0.25rem;   /* 4px */
+  --ftb-spacing-sm: 0.5rem;    /* 8px */
+  --ftb-spacing-md: 1rem;      /* 16px */
+  --ftb-spacing-lg: 1.5rem;    /* 24px */
+  --ftb-spacing-xl: 2rem;      /* 32px */
+  --ftb-spacing-2xl: 3rem;     /* 48px */
+  --ftb-spacing-3xl: 4rem;     /* 64px */
+  --ftb-spacing-4xl: 5rem;     /* 80px */
+
+  /* =============================================================================
+     BORDER RADIUS SYSTEM
+     ============================================================================= */
+
+  --ftb-radius-xs: 0.125rem;    /* 2px */
+  --ftb-radius-sm: 0.375rem;    /* 6px */
+  --ftb-radius-md: 0.5rem;      /* 8px */
+  --ftb-radius-lg: 0.75rem;     /* 12px */
+  --ftb-radius-xl: 1rem;        /* 16px */
+  --ftb-radius-2xl: 1.5rem;     /* 24px */
+  --ftb-radius-full: 50%;       /* Perfect circle */
+
+  /* =============================================================================
+     SHADOW SYSTEM
+     ============================================================================= */
+
+  --ftb-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --ftb-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --ftb-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --ftb-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --ftb-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --ftb-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* Enhanced table shadows */
+  --ftb-shadow-table: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+  /* =============================================================================
+     TYPOGRAPHY SYSTEM
+     ============================================================================= */
+
+  --ftb-font-sans: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --ftb-font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+
+  /* Font sizes */
+  --ftb-text-xs: 0.75rem;       /* 12px */
+  --ftb-text-sm: 0.875rem;      /* 14px */
+  --ftb-text-base: 1rem;        /* 16px */
+  --ftb-text-lg: 1.125rem;      /* 18px */
+  --ftb-text-xl: 1.25rem;       /* 20px */
+  --ftb-text-2xl: 1.5rem;       /* 24px */
+  --ftb-text-3xl: 1.875rem;     /* 30px */
+  --ftb-text-4xl: 2.25rem;      /* 36px */
+  --ftb-text-5xl: 3rem;         /* 48px */
+  --ftb-text-6xl: 3.75rem;      /* 60px */
+
+  /* Line heights */
+  --ftb-leading-none: 1;
+  --ftb-leading-tight: 1.25;
+  --ftb-leading-snug: 1.375;
+  --ftb-leading-normal: 1.5;
+  --ftb-leading-relaxed: 1.625;
+  --ftb-leading-loose: 2;
+
+  /* =============================================================================
+     ANIMATION SYSTEM
+     ============================================================================= */
+
+  --ftb-transition-fast: 0.15s ease;
+  --ftb-transition-base: 0.3s ease;
+  --ftb-transition-slow: 0.5s ease;
+
+  /* Common easings */
+  --ftb-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ftb-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ftb-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* =============================================================================
+     BREAKPOINTS (for reference in media queries)
+     ============================================================================= */
+
+  --ftb-screen-sm: 576px;
+  --ftb-screen-md: 768px;
+  --ftb-screen-lg: 992px;
+  --ftb-screen-xl: 1200px;
+  --ftb-screen-2xl: 1400px;
+
+  /* =============================================================================
+     Z-INDEX SCALE
+     ============================================================================= */
+
+  --ftb-z-dropdown: 1000;
+  --ftb-z-sticky: 1020;
+  --ftb-z-fixed: 1030;
+  --ftb-z-modal-backdrop: 1040;
+  --ftb-z-modal: 1050;
+  --ftb-z-popover: 1060;
+  --ftb-z-tooltip: 1070;
+  --ftb-z-toast: 1080;
+  --ftb-z-mobile-nav: 9999;
+
+  /* =============================================================================
+     MOBILE RESPONSIVE ADJUSTMENTS
+     ============================================================================= */
+
+  @media (max-width: 991.98px) {
+    :root {
+      --ftb-spacing-xs: 0.2rem;
+      --ftb-spacing-sm: 0.4rem;
+      --ftb-spacing-md: 0.8rem;
+      --ftb-spacing-lg: 1.2rem;
+      --ftb-spacing-xl: 1.6rem;
+      --ftb-spacing-2xl: 2.4rem;
+      --ftb-spacing-3xl: 3.2rem;
+      --ftb-spacing-4xl: 4rem;
+    }
+  }
+}
+
+/* =============================================================================
+   LEGACY VARIABLE ALIASES
+   Maintains compatibility with existing code while transitioning
+   ============================================================================= */
+
+:root {
+  /* Primary color aliases */
+  --color-primary: var(--ftb-primary);
+  --color-primary-light: var(--ftb-primary-light);
+  --color-primary-dark: var(--ftb-primary-dark);
+  --color-secondary: var(--ftb-secondary);
+  --color-accent: var(--ftb-accent);
+
+  /* Text color aliases */
+  --color-text-primary: var(--ftb-text-primary);
+  --color-text-secondary: var(--ftb-text-secondary);
+  --color-text-dark: var(--ftb-text-dark);
+
+  /* Background aliases */
+  --color-white: var(--ftb-white);
+  --color-light-gray: var(--ftb-light-gray);
+  --color-gray: var(--ftb-gray);
+  --color-dark-gray: var(--ftb-dark-gray);
+  --color-black: var(--ftb-black);
+  --color-border: var(--ftb-gray);
+
+  /* Status color aliases */
+  --color-success: var(--ftb-success);
+  --color-warning: var(--ftb-warning);
+  --color-error: var(--ftb-error);
+  --color-danger: var(--ftb-danger);
+  --color-info: var(--ftb-info);
+
+  /* Gradient aliases */
+  --gradient-primary: var(--ftb-gradient-primary);
+  --gradient-secondary: var(--ftb-gradient-secondary);
+  --gradient-light: var(--ftb-gradient-light);
+  --gradient-dark: var(--ftb-gradient-dark);
+
+  /* Glass effect aliases */
+  --glass-background: var(--ftb-glass-bg);
+  --glass-background-dark: var(--ftb-glass-bg-dark);
+  --glass-border: var(--ftb-glass-border);
+  --glass-backdrop: var(--ftb-glass-backdrop);
+  --glass-shadow: var(--ftb-card-shadow);
+
+  /* Card aliases */
+  --card-background: var(--ftb-card-bg);
+  --card-shadow: var(--ftb-card-shadow);
+  --card-shadow-hover: var(--ftb-card-shadow-hover);
+  --card-border-radius: var(--ftb-radius-lg);
+
+  /* Neomorphism aliases */
+  --neo-background: var(--ftb-neo-bg);
+  --neo-shadow-light: var(--ftb-neo-light);
+  --neo-shadow-dark: var(--ftb-neo-dark);
+  --neo-inset-light: var(--ftb-neo-inset);
+  --neo-inset-dark: var(--ftb-neo-inset);
+  --neo-outset-light: var(--ftb-neo-outset);
+  --neo-outset-dark: var(--ftb-neo-outset);
+
+  /* Spacing aliases */
+  --spacing-xs: var(--ftb-spacing-xs);
+  --spacing-sm: var(--ftb-spacing-sm);
+  --spacing-md: var(--ftb-spacing-md);
+  --spacing-lg: var(--ftb-spacing-lg);
+  --spacing-xl: var(--ftb-spacing-xl);
+  --spacing-2xl: var(--ftb-spacing-2xl);
+  --spacing-3xl: var(--ftb-spacing-3xl);
+
+  /* Radius aliases */
+  --radius-sm: var(--ftb-radius-sm);
+  --radius-md: var(--ftb-radius-md);
+  --radius-lg: var(--ftb-radius-lg);
+  --radius-xl: var(--ftb-radius-xl);
+  --radius-2xl: var(--ftb-radius-2xl);
+  --radius-full: var(--ftb-radius-full);
+
+  /* Shadow aliases */
+  --shadow-sm: var(--ftb-shadow-sm);
+  --shadow-md: var(--ftb-shadow-md);
+  --shadow-lg: var(--ftb-shadow-lg);
+  --shadow-xl: var(--ftb-shadow-xl);
+  --shadow-2xl: var(--ftb-shadow-2xl);
+
+  /* Typography aliases */
+  --font-family-sans: var(--ftb-font-sans);
+  --font-family-mono: var(--ftb-font-mono);
+  --line-height-body: var(--ftb-leading-normal);
+  --line-height-main-task: 1.8;
+
+  /* Animation aliases */
+  --transition-fast: var(--ftb-transition-fast);
+  --transition-base: var(--ftb-transition-base);
+  --transition-slow: var(--ftb-transition-slow);
+}
