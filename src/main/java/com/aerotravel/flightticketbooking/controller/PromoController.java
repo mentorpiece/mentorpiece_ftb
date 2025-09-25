@@ -73,10 +73,32 @@ public class PromoController {
                     headerName -> headerName,
                     request::getHeader
                 )),
-            "body", body != null ? body : ""
+            "body", body != null ? body : "",
+            "magic_number", body != null && body.contains("action=modified") ? "938570103" : null
         ));
     }
-    
+
+    @PostMapping("/set_special_cookie")
+    public ResponseEntity<Map<String, Object>> setSpecialCookie(@RequestBody(required = false) String body, HttpServletRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        if (body != null && body.contains("special_cookie_activated=true")) {
+            headers.add("Set-Cookie", "server_special_cookie=029381721; Path=/; HttpOnly");
+
+            return ResponseEntity.ok()
+                .headers(headers)
+                .body(Map.of(
+                    "ok", true,
+                    "special_cookie_activated", true
+                ));
+        } else {
+            return ResponseEntity.ok()
+                .body(Map.of(
+                    "ok", true,
+                    "special_cookie_activated", false
+                ));
+        }
+    }
+
     @GetMapping("/static/{filename:.+}")
     public ResponseEntity<?> serveStaticFiles(@PathVariable String filename) {
         // Return 404

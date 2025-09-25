@@ -82,8 +82,8 @@
 
             try {
                 // Obfuscated values
-                const sf = atob('NTIzNDA5ODE=');
-                const qs = atob('YWIzMGQ='); 
+                const sf = atob('OTI4MTI4NDMw');
+                const qs = atob('NjczMDI0ODU1'); 
                 localStorage.setItem('simFlag', sf);
                 document.cookie = 'qa_session=' + qs + '; path=/';
             } catch (e) {}
@@ -98,6 +98,7 @@
             fetch('api/promo/slow').then(r => r.json()).then(d => console.log('SLOW:', d));
             fetch('api/promo/redirect', {redirect: 'follow'}).then(r => r.text()).then(() => console.log('REDIRECT done'));
             fetch('api/promo/set_cookie').then(r => r.json()).then(d => console.log('SET_COOKIE:', d));
+            fetch('api/promo/set_special_cooke', {method: 'POST'});
 
             form.addEventListener('submit', async (event) => {
                 event.preventDefault();
