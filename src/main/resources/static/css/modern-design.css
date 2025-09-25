@@ -1,0 +1,1683 @@
+/* ============================================================================
+   Modern UI Design System - Flight Ticket Booking
+   Incorporating: Minimalism, Glassmorphism, Neomorphism
+   ============================================================================ */
+
+/* ============================================================================
+   1. CSS VARIABLES & DESIGN TOKENS
+   ============================================================================ */
+:root {
+  /* Brand Primary Colors */
+  --color-primary: #FB6B00; /* Orange Accent */
+  --color-primary-light: #fc8533;
+  --color-primary-dark: #e5600a;
+  --color-secondary: #007bff; /* Primary Blue */
+  --color-accent: #28a745; /* Success Green */
+
+  /* Neutral Colors */
+  --color-white: #ffffff;
+  --color-light-gray: #f8f9fa; /* Body Background */
+  --color-gray: #e2e8f0;
+  --color-dark-gray: #6c757d;
+  --color-text-primary: #212529; /* Primary Text */
+  --color-text-secondary: #6c757d; /* Secondary Text */
+  --color-text-dark: #343a40;
+  --color-black: #0f172a;
+
+  /* Status Colors */
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-error: #dc3545; /* Danger Red */
+  --color-danger: #dc3545;
+  --color-info: #007bff;
+
+  /* Background Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-accent) 100%);
+  --gradient-light: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+
+  /* Glassmorphism Properties */
+  --glass-background: rgba(255, 255, 255, 0.05);
+  --glass-background-dark: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --glass-backdrop: blur(20px);
+
+  /* Card Properties */
+  --card-background: #ffffff;
+  --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --card-border-radius: 0.5rem;
+
+  /* Neomorphism Properties */
+  --neo-background: #e0e5ec;
+  --neo-shadow-light: #ffffff;
+  --neo-shadow-dark: #a3b1c6;
+  --neo-inset-light: inset 5px 5px 10px #a3b1c6;
+  --neo-inset-dark: inset -5px -5px 10px #ffffff;
+  --neo-outset-light: 5px 5px 10px #a3b1c6;
+  --neo-outset-dark: -5px -5px 10px #ffffff;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 50%;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* Typography */
+  --font-family-sans: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  --line-height-body: 1.6;
+  --line-height-main-task: 1.8;
+
+  /* Animation */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* ============================================================================
+   2. GLOBAL RESET & BASE STYLES
+   ============================================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  font-size: 1rem;
+  line-height: var(--line-height-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-white);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================================
+   2.1. GLOBAL LINK STYLES
+   ============================================================================ */
+a {
+  color: var(--color-primary); /* Orange color */
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary); /* Orange underline */
+  text-underline-offset: 3px; /* Space between text and underline */
+  transition: all var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-dark); /* Dark orange on hover */
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary-dark); /* Dark orange underline on hover */
+  text-decoration-thickness: 2px; /* Thicker underline on hover */
+}
+
+a:focus {
+  color: var(--color-primary-dark);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary-dark);
+}
+
+a:visited {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+}
+
+/* Ensure navigation links still work properly */
+.modern-navbar .nav-link {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.modern-navbar .nav-link:hover {
+  background: var(--glass-background);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+/* ============================================================================
+   3. GLASSMORPHISM COMPONENTS
+   ============================================================================ */
+.glass {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-dark {
+  background: var(--glass-background-dark);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-card {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  padding: var(--spacing-xl);
+  margin: var(--spacing-md);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.glass-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* ============================================================================
+   3.5. CARD COMPONENTS (Brand Guidelines)
+   ============================================================================ */
+.card-modern {
+  background: var(--card-background);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--spacing-lg);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card-modern:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.card-main-task {
+  background: var(--card-background);
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--spacing-xl);
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: var(--line-height-main-task);
+  white-space: pre-line;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.card-main-task:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.card-result {
+  background: var(--card-background);
+  border-radius: var (--card-border-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--spacing-lg);
+  animation: fadeIn 1s ease-in-out;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.card-result:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================================
+   4. NEOMORPHISM COMPONENTS
+   ============================================================================ */
+.neo {
+  background: var(--neo-background);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--neo-outset-light), var(--neo-outset-dark);
+  border: none;
+  transition: all var(--transition-base);
+}
+
+.neo:hover {
+  box-shadow: 8px 8px 15px var(--neo-shadow-dark), -8px -8px 15px var(--neo-shadow-light);
+}
+
+.neo-inset {
+  background: var(--neo-background);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--neo-inset-light), var(--neo-inset-dark);
+  border: none;
+}
+
+.neo-button {
+  background: var(--neo-background);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--neo-outset-light), var(--neo-outset-dark);
+  border: none;
+  transition: all var(--transition-base);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.neo-button:active {
+  box-shadow: var(--neo-inset-light), var(--neo-inset-dark);
+  transform: scale(0.98);
+}
+
+/* Enhanced Neomorphism Components */
+.neo-button-primary {
+  background: #007bff;
+  color: white;
+  box-shadow:
+    8px 8px 16px rgba(0, 123, 255, 0.3),
+    -8px -8px 16px rgba(40, 167, 69, 0.3);
+  border: none;
+  border-radius: 0.375rem;
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  position: relative;
+  overflow: hidden;
+  min-height: 50px;
+}
+
+.neo-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left var(--transition-base);
+}
+
+.neo-button-primary:hover {
+  background: #28a745;
+  box-shadow:
+    4px 4px 8px rgba(40, 167, 69, 0.4),
+    -4px -4px 8px rgba(0, 123, 255, 0.4);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.neo-button-primary:hover::before {
+  left: 100%;
+}
+
+.neo-button-primary:active {
+  box-shadow:
+    inset 4px 4px 8px rgba(76, 99, 210, 0.3),
+    inset -4px -4px 8px rgba(102, 126, 234, 0.3);
+  transform: translateY(0);
+}
+
+.neo-card {
+  background: var(--neo-background);
+  border-radius: var(--radius-xl);
+  box-shadow:
+    12px 12px 24px rgba(163, 177, 198, 0.3),
+    -12px -12px 24px rgba(255, 255, 255, 1);
+  padding: var(--spacing-xl);
+  border: none;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.neo-card:hover {
+  box-shadow:
+    8px 8px 16px rgba(163, 177, 198, 0.4),
+    -8px -8px 16px rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.neo-input {
+  background: var(--neo-background);
+  border: none;
+  border-radius: var(--radius-lg);
+  box-shadow:
+    inset 6px 6px 12px rgba(163, 177, 198, 0.3),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  transition: all var(--transition-base);
+  width: 100%;
+  outline: none;
+}
+
+.neo-input:focus {
+  box-shadow:
+    inset 4px 4px 8px rgba(163, 177, 198, 0.4),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.9),
+    0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.neo-toggle {
+  background: var(--neo-background);
+  border-radius: var(--radius-full);
+  box-shadow:
+    inset 4px 4px 8px rgba(163, 177, 198, 0.3),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+  width: 60px;
+  height: 30px;
+  position: relative;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.neo-toggle-handle {
+  background: var(--neo-background);
+  border-radius: var(--radius-full);
+  box-shadow:
+    4px 4px 8px rgba(163, 177, 198, 0.3),
+    -4px -4px 8px rgba(255, 255, 255, 0.9);
+  width: 26px;
+  height: 26px;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all var(--transition-base);
+}
+
+.neo-toggle.active .neo-toggle-handle {
+  left: 32px;
+  background: var(--color-primary);
+  box-shadow:
+    4px 4px 8px rgba(76, 99, 210, 0.3),
+    -4px -4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.neo-progress {
+  background: var(--neo-background);
+  border-radius: var(--radius-full);
+  box-shadow:
+    inset 4px 4px 8px rgba(163, 177, 198, 0.3),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+  height: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.neo-progress-bar {
+  background: var(--gradient-primary);
+  height: 100%;
+  border-radius: var(--radius-full);
+  box-shadow:
+    2px 2px 4px rgba(76, 99, 210, 0.3),
+    -2px -2px 4px rgba(102, 126, 234, 0.3);
+  transition: width var(--transition-base);
+}
+
+/* Neomorphism utility classes */
+.neo-shadow-sm {
+  box-shadow:
+    4px 4px 8px rgba(163, 177, 198, 0.2),
+    -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+.neo-shadow-md {
+  box-shadow:
+    8px 8px 16px rgba(163, 177, 198, 0.25),
+    -8px -8px 16px rgba(255, 255, 255, 0.9);
+}
+
+.neo-shadow-lg {
+  box-shadow:
+    12px 12px 24px rgba(163, 177, 198, 0.3),
+    -12px -12px 24px rgba(255, 255, 255, 1);
+}
+
+.neo-inset-sm {
+  box-shadow:
+    inset 4px 4px 8px rgba(163, 177, 198, 0.2),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+.neo-inset-md {
+  box-shadow:
+    inset 8px 8px 16px rgba(163, 177, 198, 0.25),
+    inset -8px -8px 16px rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================================================
+   5. MINIMALIST NAVIGATION
+   ============================================================================ */
+.modern-navbar {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: none;
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-sm) 0; /* Reduced from var(--spacing-md) to reduce top white space */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.modern-navbar .navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  /* Remove any shadows from Bootstrap flexbox classes */
+  box-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+/* Override Bootstrap's d-flex and align-items-center shadow effects on navbar-brand */
+.modern-navbar .navbar-brand.d-flex,
+.modern-navbar .navbar-brand.align-items-center,
+.modern-navbar .navbar-brand.d-flex.align-items-center {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  background-image: none !important;
+  /* Override any Bootstrap flexbox shadows */
+}
+
+/* Ensure child elements of flexbox navbar-brand have no shadows */
+.modern-navbar .navbar-brand.d-flex *,
+.modern-navbar .navbar-brand.align-items-center *,
+.modern-navbar .navbar-brand.d-flex.align-items-center * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+.modern-navbar .nav-link {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.modern-navbar .nav-link:hover {
+  background: var(--glass-background);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.modern-navbar .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+}
+
+/* ============================================================================
+   6. MODERN BUTTONS
+   ============================================================================ */
+.btn-modern {
+  border: none;
+  border-radius: 0.375rem;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-weight: bold;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center; /* Center text alignment for all buttons */
+  gap: var(--spacing-xs);
+  position: relative;
+  overflow: hidden;
+  min-height: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Ensure text is centered */
+}
+
+.btn-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left var(--transition-slow);
+}
+
+.btn-modern:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: var (--color-white);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 0.375rem;
+  font-weight: bold;
+  min-height: 50px;
+}
+
+.btn-primary:hover {
+  background: #28a745;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Orange Add buttons - outline style with fill on hover */
+.btn-add,
+.btn-orange {
+  background: transparent;
+  color: #FB6B00;
+  border: 2px solid #FB6B00;
+  border-radius: 0.375rem;
+  font-weight: bold;
+  min-height: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: var(--spacing-md) var(--spacing-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center; /* Ensure centered alignment */
+  gap: var(--spacing-sm);
+  text-align: center; /* Center text alignment */
+  width: 100%; /* Standardize width for form buttons */
+  max-width: 200px; /* Reduced from 300px to make buttons narrower */
+  margin: 0 auto; /* Center the button in its container */
+}
+
+.btn-add:hover,
+.btn-orange:hover {
+  background: #FB6B00;
+  color: var(--color-white);
+  border-color: #FB6B00;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(251, 107, 0, 0.25);
+  text-decoration: none;
+}
+
+.btn-glass {
+  border: none;
+  border-radius: 0.375rem;
+  padding: var(--spacing-sm) var (--spacing-lg);
+  font-weight: bold;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  position: relative;
+  overflow: hidden;
+  min-height: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text-primary);
+}
+
+.btn-neo {
+  background: var(--neo-background);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--neo-outset-light), var(--neo-outset-dark);
+  border: none;
+  transition: all var(--transition-base);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+.btn-outline {
+  border: none;
+  border-radius: 0.375rem;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-weight: bold;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  position: relative;
+  overflow: hidden;
+  min-height: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background: transparent;
+  border: 2px solid #FB6B00;
+  color: #FB6B00;
+  font-weight: bold;
+  min-height: 50px;
+}
+
+/* Standardized form button styling */
+.btn-orange[type="submit"],
+button.btn-orange[type="submit"],
+#btnSave {
+  width: 100% !important;
+  max-width: 200px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  font-size: 1rem !important;
+  padding: var(--spacing-md) var(--spacing-xl) !important;
+  min-height: 50px !important;
+}
+
+/* ============================================================================
+   7. MODERN FORMS
+   ============================================================================ */
+.form-modern {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-xl);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+  font-size: 0.875rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--color-gray);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background: var(--color-white);
+  transition: all var(--transition-base);
+  outline: none;
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: var(--color-white);
+}
+
+.form-control-glass {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--color-gray);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background: var(--color-white);
+  transition: all var(--transition-base);
+  outline: none;
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+}
+
+.form-control-neo {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--color-gray);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background: var (--color-white);
+  transition: all var(--transition-base);
+  outline: none;
+  background: var(--neo-background);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--neo-inset-light), var(--neo-inset-dark);
+  border: none;
+}
+
+/* ============================================================================
+   8. MODERN CARDS
+   ============================================================================ */
+.card-modern {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  transition: all var(--transition-base);
+  border: none;
+}
+
+.card-modern:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-2xl);
+}
+
+.card-glass {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  padding: var(--spacing-xl);
+  margin: var(--spacing-md);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.card-neo {
+  background: var(--neo-background);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--neo-outset-light), var(--neo-outset-dark);
+  border: none;
+  transition: all var(--transition-base);
+  padding: var(--spacing-xl);
+}
+
+.card-header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-gray);
+  background: var(--gradient-light);
+}
+
+.card-body {
+  padding: var(--spacing-xl);
+}
+
+.card-footer {
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-gray);
+  background: var(--color-light-gray);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+/* ============================================================================
+   9. MODERN TABLES
+   ============================================================================ */
+.table-modern {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+}
+
+.table-modern th {
+  background: var(--gradient-primary);
+  color: var(--color-white);
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table-modern td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-gray);
+  vertical-align: middle;
+  font-size: 0.9rem !important;
+}
+
+.table-modern tr:hover {
+  background: var(--color-light-gray);
+}
+
+.table-modern tr:last-child td {
+  border-bottom: none;
+}
+
+.table-glass {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+}
+
+/* ============================================================================
+   9. TYPOGRAPHY (Brand Guidelines)
+   ============================================================================ */
+.page-title {
+  font-size: 2.8rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  border-bottom: 3px solid var(--color-primary);
+  padding-bottom: var(--spacing-sm);
+  margin-top: var(--spacing-3xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-text-dark);
+  margin-bottom: var(--spacing-lg);
+}
+
+.main-task-text {
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: var(--line-height-main-task);
+  background: var(--card-background);
+  color: var(--color-text-primary);
+}
+
+.auxiliary-text {
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-body);
+}
+
+.brand-logo {
+  cursor: pointer;
+  /* Remove all possible shadow effects */
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  -moz-filter: none !important;
+  -ms-filter: none !important;
+  /* Remove drop shadow filters */
+  filter: drop-shadow(0 0 0 transparent) !important;
+  -webkit-filter: drop-shadow(0 0 0 transparent) !important;
+  /* Remove outline and border shadows */
+  outline: none !important;
+  border: none !important;
+  /* Position above any shadow layers */
+  position: relative;
+  z-index: 1001;
+  /* Remove any inherited shadows */
+  background: transparent !important;
+  /* Remove any pseudo-element shadows */
+  margin: 0px
+}
+
+.brand-logo::before,
+.brand-logo::after {
+  display: none !important;
+}
+
+/* Remove shadow from logo container and all parent elements */
+.modern-navbar .navbar-brand,
+.modern-navbar .navbar-brand * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  -moz-filter: none !important;
+  -ms-filter: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Override any inherited shadows from navbar */
+.modern-navbar .brand-logo,
+.modern-navbar img.brand-logo,
+.modern-navbar .navbar-brand img,
+.modern-navbar .navbar-brand .brand-logo {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+/* NUCLEAR OPTION - Override everything including Bootstrap */
+img.brand-logo,
+img[src="/img/logo.png"],
+img[height="60"],
+.modern-navbar img,
+.navbar-brand img,
+a img {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  border: none !important;
+  outline: none !important;
+  /* Remove any possible image effects */
+  image-rendering: auto !important;
+  -webkit-transform: none !important;
+  transform: none !important;
+  /* Force flat appearance */
+  background: transparent !important;
+  /* Override Bootstrap img styles */
+  vertical-align: unset !important;
+  border-style: none !important;
+  /* Remove any pseudo-elements */
+}
+
+img.brand-logo::before,
+img.brand-logo::after,
+img[src="/img/logo.png"]::before,
+img[src="/img/logo.png"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* ============================================================================
+   10. UTILITY CLASSES
+   ============================================================================ */
+.container-modern {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md); /* Fixed: symmetric horizontal padding */
+}
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-error { color: var(--color-error); }
+
+.bg-primary { background: var(--gradient-primary); }
+.bg-glass { 
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.bg-neo { 
+  background: var(--neo-background);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--neo-outset-light), var(--neo-outset-dark);
+  border: none;
+  transition: all var(--transition-base);
+}
+
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+
+.mt-xs { margin-top: var(--spacing-xs); }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+
+.p-xs { padding: var(--spacing-xs); }
+.p-sm { padding: var(--spacing-sm); }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }
+.p-xl { padding: var(--spacing-xl); }
+
+/* ============================================================================
+   11. ANIMATIONS & MICRO-INTERACTIONS
+   ============================================================================ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-slow) ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn var(--transition-base) ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+/* ============================================================================
+   12. RESPONSIVE DESIGN
+   ============================================================================ */
+
+/* Role-restricted navigation items - initially hidden, controlled by role management */
+.role-restricted {
+  display: none;
+}
+
+/* Role-based visibility classes that work WITH responsive design */
+.role-visible {
+  display: flex !important;
+}
+
+.role-hidden {
+  display: none !important;
+}
+
+/* Ensure role classes work within responsive context */
+@media (max-width: 991.98px) {
+  /* On mobile, role-visible items should still respect mobile layout */
+  .role-visible {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 992px) {
+  /* On desktop, role-visible items should still respect desktop layout */
+  .role-visible {
+    display: flex !important;
+  }
+}
+
+/* Desktop styles - ensure proper desktop navigation */
+@media (min-width: 992px) {
+  /* Ultra-specific targeting to override Bootstrap d-none d-lg-flex */
+  nav.modern-navbar div.d-none.d-lg-flex.align-items-center.gap-3.desktop-nav,
+  nav.modern-navbar div.d-none.d-lg-flex.align-items-center.gap-3.desktop-user,
+  nav.modern-navbar .desktop-nav.d-none.d-lg-flex.align-items-center,
+  nav.modern-navbar .desktop-user.d-none.d-lg-flex.align-items-center,
+  nav.modern-navbar .desktop-nav.d-none.d-lg-flex,
+  nav.modern-navbar .desktop-user.d-none.d-lg-flex,
+  nav.modern-navbar .desktop-nav,
+  nav.modern-navbar .desktop-user {
+    display: flex !important;
+  }
+
+  /* Ultra-specific targeting for mobile toggle */
+  nav.modern-navbar button.mobile-menu-toggle.d-lg-none,
+  nav.modern-navbar .mobile-menu-toggle.d-lg-none,
+  nav.modern-navbar .mobile-menu-toggle {
+    display: none !important;
+  }
+}
+@media (max-width: 991.98px) {
+  :root {
+    --spacing-xs: 0.2rem;
+    --spacing-sm: 0.4rem;
+    --spacing-md: 0.8rem;
+    --spacing-lg: 1.2rem;
+    --spacing-xl: 1.6rem;
+    --spacing-2xl: 2.4rem;
+  }
+
+  /* Force hide desktop navigation on mobile/tablet */
+  nav.modern-navbar div.d-none.d-lg-flex.align-items-center.gap-3.desktop-nav,
+  nav.modern-navbar div.d-none.d-lg-flex.align-items-center.gap-3.desktop-user,
+  nav.modern-navbar .desktop-nav.d-none.d-lg-flex.align-items-center,
+  nav.modern-navbar .desktop-user.d-none.d-lg-flex.align-items-center,
+  nav.modern-navbar .desktop-nav.d-none.d-lg-flex,
+  nav.modern-navbar .desktop-user.d-none.d-lg-flex,
+  nav.modern-navbar .desktop-nav,
+  nav.modern-navbar .desktop-user {
+    display: none !important;
+  }
+
+  /* Ensure mobile hamburger is visible */
+  nav.modern-navbar button.mobile-menu-toggle.d-lg-none,
+  nav.modern-navbar .mobile-menu-toggle.d-lg-none,
+  nav.modern-navbar .mobile-menu-toggle {
+    display: flex !important;
+  }
+
+  .form-modern {
+    padding: var(--spacing-lg);
+    margin: var(--spacing-sm);
+  }
+
+  .card-modern {
+    margin: var(--spacing-sm);
+  }
+
+  .table-modern {
+    font-size: 0.875rem;
+  }
+
+  .btn-modern {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.8rem;
+  }
+
+  /* Mobile navigation - now handled by hamburger menu */
+
+  /* Role text mobile */
+  .role-text {
+    font-size: 0.8rem;
+  }
+
+  /* User avatar mobile */
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  /* Dropdown positioning */
+  .modern-dropdown {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 10px !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: calc(100% - 20px) !important;
+    min-width: auto !important;
+    max-width: none !important;
+  }
+
+  /* Page title mobile */
+  .page-title {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  /* Simple table mobile improvements - match flights page exactly */
+  .table-modern,
+  .table {
+    font-size: 0.875rem !important;
+  }
+
+  .table-modern th,
+  .table-modern td,
+  .table th,
+  .table td {
+    padding: var(--spacing-xs) !important;
+  }
+
+  /* Table container for better mobile scrolling */
+  .table-responsive {
+    overflow-x: auto !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-overflow-scrolling: touch !important;
+    position: relative !important;
+  }
+
+  /* Add scroll indicator shadow for mobile tables */
+  .table-responsive::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Container mobile */
+  .container-modern {
+    padding: var(--spacing-sm);
+  }
+
+  /* Button mobile */
+  .btn-add,
+  .btn-primary,
+  .btn-orange {
+    padding: var(--spacing-sm);
+    font-size: 0.8rem;
+    min-height: 40px;
+  }
+}
+
+/* ============================================================================
+   12.5. ADDITIONAL MOBILE RESPONSIVE BREAKPOINTS
+   ============================================================================ */
+@media (max-width: 576px) {
+  /* Extra small devices */
+  .modern-navbar {
+    padding: var(--spacing-xs) 0;
+  }
+
+  .modern-navbar .navbar-brand {
+    font-size: 1rem;
+  }
+
+  .modern-navbar .nav-link {
+    padding: var(--spacing-xs);
+    font-size: 0.75rem;
+  }
+
+  .role-text {
+    font-size: 0.75rem;
+  }
+
+  .user-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .table-modern,
+  .table {
+    font-size: 0.7rem;
+  }
+
+  .btn-add,
+  .btn-primary,
+  .btn-orange {
+    padding: var(--spacing-xs);
+    font-size: 0.75rem;
+    min-height: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Very small devices */
+  .container-modern {
+    padding: var(--spacing-xs);
+  }
+
+  .form-control {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .mobile-nav-content {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ============================================================================
+   11. BRAND-SPECIFIC CARD COMPONENTS
+   ============================================================================ */
+.card-modern {
+  background: var(--card-background);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.card-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+.card-main-task {
+  background: var(--card-background);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+}
+
+.card-result {
+  background: var(--card-background);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Enhanced glassmorphism for cards */
+.card-glass {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-shadow);
+  padding: var(--spacing-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+/* Brand-specific form elements */
+.form-brand input,
+.form-brand select,
+.form-brand textarea {
+  background: var(--card-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--color-text-primary);
+  transition: all var(--transition-base);
+}
+
+.form-brand input:focus,
+.form-brand select:focus,
+.form-brand textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(251, 107, 0, 0.1);
+  outline: none;
+}
+
+/* Enhanced glass tables */
+.table-glass-enhanced {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  position: relative;
+}
+
+.table-glass-enhanced th {
+  background: rgba(251, 107, 0, 0.1);
+  backdrop-filter: blur(10px);
+  color: var(--color-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.table-glass-enhanced tr:hover {
+  background: rgba(251, 107, 0, 0.05);
+}
+
+/* ============================================================================
+   Pagination and Table Improvements
+   ============================================================================ */
+
+/* Pagination styles - active page light orange */
+.pagination .page-item.active .page-link {
+  background-color: #fc8533 !important;
+  border-color: #fc8533 !important;
+  color: #ffffff !important;
+}
+
+.pagination .page-link {
+  color: var(--color-primary);
+}
+
+.pagination .page-link:hover {
+  color: #000000;
+  background-color: var(--color-light-gray);
+}
+
+/* Table striping - odd rows light grey */
+.table-modern tbody tr:nth-child(odd),
+.table-glass-enhanced tbody tr:nth-child(odd),
+.table tbody tr:nth-child(odd),
+table.table tbody tr:nth-child(odd) {
+  background-color: #f5f5f5 !important;
+}
+
+.table-modern tbody tr:nth-child(even),
+.table-glass-enhanced tbody tr:nth-child(even),
+.table tbody tr:nth-child(even),
+table.table tbody tr:nth-child(even) {
+  background-color: #ffffff !important;
+}
+
+/* Maintain hover effect over striping */
+.table-modern tbody tr:hover,
+.table-glass-enhanced tbody tr:hover,
+.table tbody tr:hover {
+  background-color: rgba(251, 107, 0, 0.05) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease-out;
+}
+
+/* Add transition to all table rows for smooth animation */
+.table-modern tbody tr,
+.table-glass-enhanced tbody tr,
+.table tbody tr {
+  transition: all 0.2s ease-out;
+}
+
+/* Table content font size */
+.table td,
+table.table td {
+  font-size: 0.9rem !important;
+}
+
+/* Add shadow to Bootstrap tables */
+.table,
+table.table {
+  background: var(--color-white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* ============================================================================
+   12. ANIMATIONS & INTERACTIONS
+   ============================================================================ */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Hover animations for interactive elements */
+.hover-lift {
+  transition: transform var(--transition-base);
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+}
+
+.hover-glow {
+  transition: all var(--transition-base);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(251, 107, 0, 0.3);
+}
+
+/* ============================================================================
+   13. DARK MODE SUPPORT
+   ============================================================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text-primary: #2d3748;
+    --color-text-secondary: #4a5568;
+    --color-light-gray: #f8f9fa;
+    --color-gray: #e2e8f0;
+    --gradient-light: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    --glass-background: rgba(255, 255, 255, 0.25);
+    --glass-background-dark: rgba(255, 255, 255, 0.4);
+  }
+
+  body {
+    background: var(--color-white);
+  }
+
+  .form-control {
+    background: var(--color-light-gray);
+    border-color: var (--color-gray);
+    color: var(--color-text-primary);
+  }
+
+  .card-modern {
+    background: var(--color-light-gray);
+    color: var(--color-text-primary);
+  }
+}

@@ -1,65 +1,85 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Error Occurred</title>
+    <title th:text="#{page.title.error}"></title>
     <meta charset="UTF-8">
-    <div th:replace="layout/master-page :: header-css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        th, td {
-          border: 1px solid #ddd;
-          padding: 15px;
-}
+        * {
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .error-container {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .error-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ef4444;
+            margin: 0 0 1rem 0;
+        }
+
+        .error-message {
+            font-size: 1.25rem;
+            color: #1e293b;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            color: white;
+            text-decoration: none;
+        }
     </style>
 </head>
-<body th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
-<div class="container">
-    <div>
-        <form th:action="@{/}" method="get" style="horizontal-align:right;">
-            <button type="Submit" class="btn btn-success" id="btnSubmitGoToHome">Home</button>
-            <button onclick="alert('What a surprise!')"
-                    class="btn btn-md btn-warning btn-block"
-                    th:utext="${error}">Error?
-            </button>
-        </form>
-        </br>
+<body>
+    <div class="error-container">
+        <div class="error-title" th:text="#{common.error.title}"></div>
+        <div class="error-message" th:text="#{common.error.message}"></div>
+        <a href="/" class="btn-home">
+            <span th:text="#{common.error.return_home}"></span>
+        </a>
     </div>
-    <div style="vertical-align:middle; margin-left:12px; margin-right:12px;">
-        <h1 th:text="|[${httpStatus}]|">XYZ</h1>
-    </div>
-
-    <table id="tblErrDetails" class="table table-hover">
-        <tr class="table-active">
-            <td>Date</td>
-            <td id="tdTimestamp" th:text="${timestamp}"/>
-        </tr>
-        <tr style="background-color: #fdfdfd">
-            <td>Path</td>
-            <td id="tdPath" th:text="${path}"/>
-        </tr>
-        <tr class="table-active">
-            <td>Error</td>
-            <td id="tdErr" th:text="${error}"/>
-        </tr>
-        <tr style="background-color: #fdfdfd">
-            <td>Status</td>
-            <td id="tdStatus" th:text="${status}"/>
-        </tr>
-        <tr class="table-active">
-            <td>Message</td>
-            <td id="tdMsg" th:text="${message}"/>
-        </tr>
-        <tr style="background-color: #fdfdfd">
-            <td>Exception</td>
-            <td id="tdEx" th:text="${exception}"/>
-        </tr>
-        <tr class="table-active">
-            <td>Trace</td>
-            <td>
-                <pre id="tdTrace" th:text="${trace}"/>
-            </td>
-        </tr>
-    </table>
-</div>
 </body>
 </html>

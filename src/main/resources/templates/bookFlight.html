@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Booking</title>
+    <title th:text="#{page.title.booking}"></title>
     <div th:replace="layout/master-page :: header-css"/>
     <style type="text/css"></style>
 </head>
@@ -13,8 +13,8 @@
     <th:block layout:fragment="content">
         <div class="row">
             <div class="row">
-                <div class="col-md-12" style="margin-bottom: 10px">
-                    <h1 style="color: darkblue">Book a Flight</h1>
+                <div class="col-md-8">
+                    <h1 style="color: #2d3748; margin-top: 2rem;" th:text="#{flight.book.title}"></h1>
                 </div>
 
             </div>
@@ -24,7 +24,7 @@
             <div class="row">
 
                 <div class="from-group col-md-4">
-                    <label class="col-form-label" for="departureAirport">From</label>
+                    <label class="col-form-label" for="departureAirport" th:text="#{flight.table.from}"></label>
                     <select class="form-control" id="departureAirport" name="departureAirport">
                         <option th:each="airport, i:${airports}" th:text="${airport.airportName}"
                                 th:value="${airport.airportId}">
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="from-group col-md-4">
-                    <label class="col-form-label" for="destinationAirport">To</label>
+                    <label class="col-form-label" for="destinationAirport" th:text="#{flight.table.to}"></label>
                     <span class="badge badge-danger" th:if="${AirportError!=null}"
                           th:text="${AirportError}"></span>
                     <select class="form-control" id="destinationAirport" name="destinationAirport">
@@ -44,14 +44,14 @@
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="departureTime">Departure Time</label>
+                    <label class="col-form-label" for="departureTime" th:text="#{flight.search.departure_time}"></label>
                     <input class="form-control" id="departureTime" name="departureTime" placeholder=""
                            required type="date">
                 </div>
 
 
                 <div class="form-group col-12">
-                    <button class="btn btn-success" style="float: right" type="submit">Search</button>
+                    <button class="btn-add" style="float: right" type="submit" th:text="#{flight.book.search}"></button>
                 </div>
 
             </div>
@@ -59,35 +59,35 @@
         <div class="row">
             <th:block th:if="${notFound !=null}">
                 <div class="col-12">
-                    <p style="text-align: center; margin-top: 30px; color: red; font-weight: bold">No Record Found!</p>
+                    <p style="text-align: center; margin-top: 30px; color: red; font-weight: bold" th:text="#{flight.book.no_record}"></p>
                 </div>
             </th:block>
             <th:block th:if="${flights}">
                 <div class="row" style="margin-bottom: 10px">
                     <div class="col-md-6">
-                        <h1 style="color: darkblue">Result </h1>
+                        <h1 style="color: darkblue" th:text="#{flight.book.result}"></h1>
                     </div>
 
                 </div>
-                <table id = "tblFlights" class="table table-sm">
+                <table id = "tblFlights" class="table table-hover">
                     <thead>
                     <tr class="table-active">
-                        <th scope="col">ID</th>
-                        <th scope="col">Flight Number</th>
-                        <th scope="col">From</th>
-                        <th scope="col">To</th>
-                        <th scope="col">Departure</th>
-                        <th scope="col">Arrival</th>
-                        <th scope="col">Flight Charge</th>
-                        <th scope="col">Aircraft</th>
-                        <th scope="col">Available Seats</th>
+                        <th scope="col" th:text="#{flight.table.id}"></th>
+                        <th scope="col" th:text="#{flight.table.number}"></th>
+                        <th scope="col" th:text="#{flight.table.from}"></th>
+                        <th scope="col" th:text="#{flight.table.to}"></th>
+                        <th scope="col" th:text="#{flight.table.departure}"></th>
+                        <th scope="col" th:text="#{flight.table.arrival}"></th>
+                        <th scope="col" th:text="#{flight.table.charge}"></th>
+                        <th scope="col" th:text="#{flight.table.aircraft}"></th>
+                        <th scope="col" th:text="#{flight.table.available_seats}"></th>
                         <th scope="col"></th>
                     </tr>
                     </thead>
                     <tbody>
                     <div th:each="flight, iterStat:${flights}">
                         <tr style="background-color: #fdfdfd">
-                            <th scope="row" th:text="${flight.flightId}">Dark</th>
+                            <th scope="row" th:text="${flight.flightId}"></th>
                             <td th:text="${flight.flightNumber}"></td>
                             <td th:text="${flight.departureAirport.airportName}"></td>
                             <td th:text="${flight.destinationAirport.airportName}"></td>
@@ -99,7 +99,7 @@
                             <td><a class="btn btn-primary btn-sm"
                                    th:href="@{/flight/book/new(flightId=${flight.flightId})}"
                                    th:if="${flight.passengers.size()<flight.aircraft.numberOfSeats}"
-                                   type="button">Book</a></td>
+                                   type="button" th:text="#{flight.book.book_button}"></a></td>
                         </tr>
                     </div>
                     </tbody>

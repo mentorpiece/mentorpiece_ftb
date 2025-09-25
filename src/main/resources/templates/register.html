@@ -1,87 +1,445 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
-<!-- layout:decorate="~{layout/master-page}">-->
 <head>
-    <title>Register</title>
+    <title th:text="#{page.title.register}"></title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <div th:replace="layout/master-page :: header-css"/>
-    <style type="text/css"></style>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        /* Background - exactly like index.html */
+        .register-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            opacity: 0.3;
+            z-index: 1;
+        }
+        
+        .bg-item {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Container - exactly like index.html welcome block */
+        .register-wrapper {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 2;
+            padding: 2rem 1rem;
+        }
+
+        /* Card - exactly like index.html welcome-message */
+        .register-box {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(251, 107, 0, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem;
+        }
+
+        .register-box h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 
+                2px 2px 4px rgba(0, 0, 0, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.5),
+                0 0 40px rgba(251, 107, 0, 0.3);
+        }
+
+        .register-box p {
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 
+                2px 2px 4px rgba(0, 0, 0, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.5),
+                0 0 40px rgba(251, 107, 0, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        /* Form row for side-by-side fields */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Simple input styling */
+        .input-group {
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px !important;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            box-sizing: border-box;
+            /* Reset any inherited border-radius */
+            -webkit-border-radius: 8px !important;
+            -moz-border-radius: 8px !important;
+        }
+
+        .input-group input:focus {
+            outline: 2px solid #FB6B00;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 8px !important;
+            -webkit-border-radius: 8px !important;
+            -moz-border-radius: 8px !important;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .required {
+            color: #FB6B00;
+            margin-left: 0.2rem;
+        }
+
+        /* Buttons - like index.html CTA buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            border-color: #FB6B00 !important;
+            color: white !important;
+            text-decoration: none !important;
+            background: #FB6B00 !important;
+        }
+
+        /* STRONG BOOTSTRAP OVERRIDES FOR PRIMARY BUTTON */
+        .btn-primary,
+        button.btn-primary,
+        button[type="submit"].btn-primary,
+        .btn.btn-primary {
+            background: #FB6B00 !important;
+            color: white !important;
+            border: 2px solid #FB6B00 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .btn-primary:hover,
+        button.btn-primary:hover,
+        button[type="submit"].btn-primary:hover,
+        .btn.btn-primary:hover,
+        .btn-primary:focus,
+        button.btn-primary:focus,
+        button[type="submit"].btn-primary:focus,
+        .btn.btn-primary:focus,
+        .btn-primary:active,
+        button.btn-primary:active,
+        button[type="submit"].btn-primary:active,
+        .btn.btn-primary:active {
+            background: #e5600a !important;
+            border-color: #e5600a !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(251, 107, 0, 0.4) !important;
+            text-decoration: none !important;
+        }
+
+        /* STRONG OVERRIDES FOR CANCEL BUTTON */
+        .btn-cancel,
+        a.btn-cancel,
+        .btn.btn-cancel,
+        a.btn.btn-cancel {
+            color: white !important;
+        }
+
+        .btn-cancel:hover,
+        a.btn-cancel:hover,
+        .btn.btn-cancel:hover,
+        a.btn.btn-cancel:hover,
+        .btn-cancel:focus,
+        a.btn-cancel:focus,
+        .btn.btn-cancel:focus,
+        a.btn.btn-cancel:focus,
+        .btn-cancel:active,
+        a.btn-cancel:active,
+        .btn.btn-cancel:active,
+        a.btn.btn-cancel:active {
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        /* Alerts */
+        .alert {
+            margin: 1rem 0;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+        }
+
+        .alert-error {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: white;
+        }
+
+        .alert-success {
+            background: rgba(25, 135, 84, 0.2);
+            border: 1px solid rgba(25, 135, 84, 0.3);
+            color: white;
+        }
+
+        /* Form errors and help text */
+        .form-error {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-help {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Bottom link */
+        .bottom-link {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .bottom-link p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+        }
+
+        .bottom-link a {
+            color: #FB6B00;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .bottom-link a:hover {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .register-box {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .register-box h1 {
+                font-size: 2.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="header" th:replace="layout/master-page :: header"/>
-<div class="container">
-    <th:block layout:fragment="content">
-        <div class="row justify-content-md-center">
-            <div class="col-md-6 jumbotron">
-                <h2 style="text-align: center">Registration Form</h2>
+    <!-- Background Grid -->
+    <div class="register-background">
+        <div class="bg-item" style="background-image: url('/img/pic1.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic2.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic3.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic4.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic5.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic6.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic7.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic8.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic9.jpg');"></div>
+    </div>
 
-                <form method="post" th:action="@{/register}" th:object="${user}">
-                    <div class="alert alert-dismissible alert-danger" th:if="${error}">
-                        <button class="close" data-dismiss="alert" type="button">&times;</button>
-                        <span th:text="${error}"></span>
-                    </div>
-                    <div class="alert alert-dismissible alert-success" th:if="${param.registered}">
-                        <button class="close" data-dismiss="alert" type="button">&times;</button>
-                        Registration successful! Please log in.
-                    </div>
+    <div class="register-wrapper">
+        <div class="register-box">
+            <h1 th:text="#{auth.join_title}"></h1>
+            <p th:text="#{auth.create_account_subtitle}"></p>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="firstname">First Name <span class="text-danger">*</span></label>
-                                <input class="form-control" id="firstname" th:field="*{firstname}" type="text"/>
-                                <span class="text-danger" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="lastname">Last Name <span class="text-danger">*</span></label>
-                                <input class="form-control" id="lastname" th:field="*{lastname}" type="text"/>
-                                <span class="text-danger" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="middlename">Middle Name</label>
-                        <input class="form-control" id="middlename" th:field="*{middlename}" type="text"/>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="username">Username <span class="text-danger">*</span></label>
-                        <input class="form-control" id="username" th:field="*{username}" type="text"/>
-                        <span class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
-                        <span class="text-danger" th:if="${usernameError}" th:text="${usernameError}"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email <span class="text-danger">*</span></label>
-                        <input class="form-control" id="email" th:field="*{email}" type="email"/>
-                        <span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-                        <span class="text-danger" th:if="${emailError}" th:text="${emailError}"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password <span class="text-danger">*</span></label>
-                        <input class="form-control" id="password" th:field="*{password}" type="password"/>
-                        <span class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-                        <small class="form-text text-muted">Password must be at least 8 characters long.</small>
-                    </div>
-
-                    <div style="float:right; margin-top: 20px;">
-                        <a class="btn btn-outline-warning" href="/login">Back to Login</a>&nbsp;&nbsp;&nbsp;
-                        <button class="btn btn-outline-success" type="submit">Register</button>
-                    </div>
-                    <div class="clearfix"></div>
-                </form>
-
-                <div style="text-align: center; margin-top: 30px;">
-                    <p>Already have an account? <a href="/login">Sign in here</a></p>
+            <form method="post" th:action="@{/register}" th:object="${user}">
+                <!-- Error Messages -->
+                <div class="alert alert-error" th:if="${error}">
+                    <i data-feather="alert-circle" style="width: 16px; height: 16px;"></i>
+                    <span th:text="${error}"></span>
                 </div>
+
+                <div class="alert alert-success" th:if="${param.registered}">
+                    <i data-feather="check-circle" style="width: 16px; height: 16px;"></i>
+                    <span th:text="#{auth.success.registered}"></span>
+                </div>
+
+                <!-- Name Fields -->
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="firstname"><span th:text="#{auth.first_name}"></span><span class="required">*</span></label>
+                        <input id="firstname" th:field="*{firstname}" type="text" required>
+                        <div class="form-error" th:if="${#fields.hasErrors('firstname')}">
+                            <i data-feather="alert-circle" style="width: 12px; height: 12px;"></i>
+                            <span th:errors="*{firstname}"></span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="lastname"><span th:text="#{auth.last_name}"></span><span class="required">*</span></label>
+                        <input id="lastname" th:field="*{lastname}" type="text" required>
+                        <div class="form-error" th:if="${#fields.hasErrors('lastname')}">
+                            <i data-feather="alert-circle" style="width: 12px; height: 12px;"></i>
+                            <span th:errors="*{lastname}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Name -->
+                <div class="input-group">
+                    <label for="middlename" th:text="#{auth.middle_name}"></label>
+                    <input id="middlename" th:field="*{middlename}" type="text">
+                </div>
+
+                <!-- Username -->
+                <div class="input-group">
+                    <label for="username"><span th:text="#{auth.username}"></span><span class="required">*</span></label>
+                    <input id="username" th:field="*{username}" type="text" required>
+                    <div class="form-error" th:if="${#fields.hasErrors('username')}">
+                        <i data-feather="alert-circle" style="width: 12px; height: 12px;"></i>
+                        <span th:errors="*{username}"></span>
+                    </div>
+                    <div class="form-error" th:if="${usernameError}">
+                        <i data-feather="alert-circle" style="width: 12px; height: 12px;"></i>
+                        <span th:text="${usernameError}"></span>
+                    </div>
+                    <div class="form-help">
+                        <i data-feather="info" style="width: 12px; height: 12px;"></i>
+                        <span th:text="#{auth.username_help}"></span>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="input-group">
+                    <label for="email"><span th:text="#{auth.email}"></span><span class="required">*</span></label>
+                    <input id="email" th:field="*{email}" type="email" required>
+                    <div class="form-error" th:if="${#fields.hasErrors('email')}">
+                        <i data-feather="alert-circle" style="width: 12px; height: 12px;"></i>
+                        <span th:errors="*{email}"></span>
+                    </div>
+                    <div class="form-error" th:if="${emailError}">
+                        <i data-feather="alert-circle" style="width: 12px; height: 12px;"></i>
+                        <span th:text="${emailError}"></span>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="input-group">
+                    <label for="password"><span th:text="#{auth.password}"></span><span class="required">*</span></label>
+                    <input id="password" th:field="*{password}" type="password" required>
+                    <div class="form-error" th:if="${#fields.hasErrors('password')}">
+                        <i data-feather="alert-circle" style="width: 12px; height: 12px;"></i>
+                        <span th:errors="*{password}"></span>
+                    </div>
+                    <div class="form-help">
+                        <i data-feather="shield" style="width: 12px; height: 12px;"></i>
+                        <span th:text="#{auth.password_help}"></span>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="button-group">
+                    <a href="/login" class="btn btn-cancel">
+                        <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i>
+                        <span th:text="#{auth.back_to_login}"></span>
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="user-plus" style="width: 16px; height: 16px;"></i>
+                        <span th:text="#{auth.create_account}"></span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Login Link -->
+            <div class="bottom-link">
+                <p><span th:text="#{auth.already_have_account}"></span> <a href="/login" th:text="#{auth.signin_here}"></a></p>
             </div>
         </div>
-    </th:block>
-</div>
+    </div>
+
+    <script src="/js/common.js"></script>
 </body>
 </html>

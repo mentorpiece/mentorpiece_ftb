@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Verify booking</title>
+    <title th:text="#{page.title.verify_booking}"></title>
     <div th:replace="layout/master-page :: header-css"/>
     <style type="text/css"></style>
 </head>
@@ -14,9 +14,9 @@
     <th:block layout:fragment="content">
         <div class="row">
             <div class="row">
-                <div class="col-md-12" style="margin-bottom: 10px">
-                    <h1 style="color: darkblue">Verify Booking</h1>
-                    <p>In order to verify your ticket please provide your Flight Id and Passenger Id below.</p>
+                <div class="col-md-8">
+                    <h1 style="color: #2d3748; margin-top: 2rem;" th:text="#{booking.verify.title}"></h1>
+                    <p th:text="#{verify.instruction}"></p>
                 </div>
 
             </div>
@@ -26,13 +26,13 @@
             <div class="row">
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="flightId">Flight Id</label>
+                    <label class="col-form-label" for="flightId" th:text="#{label.flight_id}"></label>
                     <input class="form-control" id="flightId" name="flightId" placeholder=""
                            required type="number">
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="passengerId">Passenger Id</label>
+                    <label class="col-form-label" for="passengerId" th:text="#{label.passenger_id}"></label>
                     <input class="form-control" id="passengerId" name="passengerId" placeholder=""
                            required type="number">
                 </div>
@@ -40,7 +40,7 @@
 
                 <div class="form-group col-2">
                     <label class="col-form-label">&nbsp </label>
-                    <button id = "btnSearch" class="btn btn-success form-control" style="float: left" type="submit">Search</button>
+                    <button id = "btnSearch" class="btn btn-success form-control" style="float: left" type="submit" th:text="#{button.search}"></button>
                 </div>
 
             </div>
@@ -55,27 +55,27 @@
             </th:block>
             <th:block th:if="${passenger !=null}">
                 <div class="col-12" style="margin-bottom: 10px">
-                    <p style="color: green; font-weight: bold">Verified Successfully!</p>
+                    <p style="color: green; font-weight: bold" th:text="#{heading.verified_successfully}"></p>
 
                 </div>
                 <hr/>
-                <h3>Customer Info</h3>
+                <h3 th:text="#{heading.customer_info}"></h3>
                 <table id = "tblPassengers" class="table table-hover">
                     <thead>
                     <tr class="table-active">
-                        <th scope="col">ID</th>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
-                        <th scope="col">Phone Number</th>
-                        <th scope="col">Passport Number</th>
-                        <th scope="col">Email</th>
+                        <th scope="col" th:text="#{table.id}"></th>
+                        <th scope="col" th:text="#{table.first_name}"></th>
+                        <th scope="col" th:text="#{table.last_name}"></th>
+                        <th scope="col" th:text="#{table.phone_number}"></th>
+                        <th scope="col" th:text="#{table.passport_number}"></th>
+                        <th scope="col" th:text="#{table.email}"></th>
 
                     </tr>
                     </thead>
                     <tbody>
                     <div th:each="passenger, iterStat:${passenger}">
                         <tr style="background-color: #fdfdfd">
-                            <th scope="row" th:text="${passenger.passengerId}">Dark</th>
+                            <th scope="row" th:text="${passenger.passengerId}"></th>
                             <td th:text="${passenger.firstName}"></td>
                             <td th:text="${passenger.lastName}"></td>
                             <td th:text="${passenger.phoneNumber}"></td>
@@ -86,17 +86,17 @@
                     </tbody>
                 </table>
                 <hr>
-                <h3>Flight Info</h3>
+                <h3 th:text="#{heading.flight_info}"></h3>
                 <table id = "tblBookings" class="table table-sm">
                     <thead>
                     <tr class="table-active">
-                        <th scope="col">Flight Number</th>
-                        <th scope="col">From</th>
-                        <th scope="col">To</th>
-                        <th scope="col">Departure</th>
-                        <th scope="col">Arrival</th>
-                        <th scope="col">Flight Charge</th>
-                        <th scope="col">Aircraft</th>
+                        <th scope="col" th:text="#{table.flight_number}"></th>
+                        <th scope="col" th:text="#{table.from}"></th>
+                        <th scope="col" th:text="#{table.to}"></th>
+                        <th scope="col" th:text="#{table.departure}"></th>
+                        <th scope="col" th:text="#{table.arrival}"></th>
+                        <th scope="col" th:text="#{table.flight_charge}"></th>
+                        <th scope="col" th:text="#{table.aircraft}"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -117,7 +117,7 @@
                 <th:block sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_AGENT')">
                     <form action="/flight/book/cancel" method="post">
                         <input name="passengerId" th:value="${passenger.passengerId}" type="hidden">
-                        <button id = "btnCancel" class="btn btn-sm btn-danger" type="submit">Cancel booking</button>
+                        <button id = "btnCancel" class="btn btn-sm btn-danger" type="submit" th:text="#{button.cancel_booking}"></button>
                     </form>
                 </th:block>
             </th:block>

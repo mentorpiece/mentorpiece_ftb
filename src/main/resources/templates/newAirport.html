@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add new airport</title>
+    <title th:text="#{page.title.add_airport}"></title>
     <div th:replace="layout/master-page :: header-css"/>
     <style type="text/css"></style>
 </head>
@@ -14,8 +14,8 @@
     <th:block layout:fragment="content">
         <div class="row">
             <div class="row">
-                <div class="col-md-12" style="margin-bottom: 10px">
-                    <h1 style="color: darkblue">Add New Airport </h1>
+                <div class="col-md-8">
+                    <h1 style="color: #2d3748; margin-top: 2rem;" th:text="#{heading.add_new_airport}"></h1>
                 </div>
 
             </div>
@@ -26,7 +26,7 @@
 
 
                 <div class="form-group col-md-6">
-                    <label class="col-form-label" for="airportCode">Airport code</label>
+                    <label class="col-form-label" for="airportCode" th:text="#{form.airport_code}"></label>
                     <span class="badge badge-danger" th:errors="*{airportCode}"
                           th:if="${#fields.hasErrors('airportCode')}"></span>
                     <input class="form-control" id="airportCode" name="airportCode" placeholder=""
@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label class="col-form-label" for="airportName">Airport Name</label>
+                    <label class="col-form-label" for="airportName" th:text="#{form.airport_name}"></label>
                     <span class="badge badge-danger" th:errors="*{airportName}"
                           th:if="${#fields.hasErrors('airportName')}"></span>
                     <input class="form-control" id="airportName" name="airportName" placeholder=""
@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="city">City</label>
+                    <label class="col-form-label" for="city" th:text="#{form.city}"></label>
                     <span class="badge badge-danger" th:errors="*{city}"
                           th:if="${#fields.hasErrors('city')}"></span>
                     <input class="form-control" id="city" name="city" placeholder=""
@@ -50,15 +50,15 @@
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="state">Region</label>
+                    <label class="col-form-label" for="state" th:text="#{form.county}"></label>
                     <span class="badge badge-danger" th:errors="*{state}"
                           th:if="${#fields.hasErrors('state')}"></span>
-                    <input class="form-control" id="state" name="region" placeholder=""
+                    <input class="form-control" id="state" name="county" placeholder=""
                            required th:value="${airport.state}" type="text">
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="country">Country</label>
+                    <label class="col-form-label" for="country" th:text="#{form.country}"></label>
                     <span class="badge badge-danger" th:errors="*{country}"
                           th:if="${#fields.hasErrors('country')}"></span>
                     <input class="form-control" id="country" name="country" placeholder=""
@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="form-group col-12">
-                    <button id = "btnSave" class="btn btn-success" style="float: right" type="submit">Save</button>
+                    <button id="btnSave" class="btn-orange" style="width: 100%; text-align: center;" type="submit" th:text="#{button.save}"></button>
                 </div>
 
             </div>

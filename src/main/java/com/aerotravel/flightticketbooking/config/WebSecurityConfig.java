@@ -63,6 +63,10 @@ public class WebSecurityConfig {
                         .requestMatchers("/", "/flights_list", "/flight/search", "/flight/book/verify", "/flight/book/cancel", "/img/**", "/register", "/login").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         
+                        // Static resources - favicon and other assets
+                        .requestMatchers("/favicon.ico", "/robots.txt").permitAll()
+                        .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/img/**").permitAll()
+                        
                         // OAuth 2.0 / JWT Authentication endpoints
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh").permitAll()
                         
@@ -72,10 +76,9 @@ public class WebSecurityConfig {
                         
                         // Web endpoints with role-based access - Session-based
                         .requestMatchers("/switch-role", "/api/current-user", "/current-user", "/api/switch-role").hasAnyRole("ADMIN", "AGENT", "USER")
-                        .requestMatchers("/flight/book**", "/flight/book/new").hasRole("AGENT")
+                        .requestMatchers("/flight/book**", "/flight/book/new").hasAnyRole("ADMIN", "AGENT")
                         .requestMatchers("/user/**").hasAnyRole("ADMIN", "AGENT")
                         .requestMatchers("/flights", "/flight/search", "/flight/book/verify").hasAnyRole("ADMIN", "AGENT", "USER")
-                        .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/img/**").permitAll()
                         .requestMatchers("/**").hasAnyRole("ADMIN", "AGENT")
                         .anyRequest().authenticated()
                 )
