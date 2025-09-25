@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add new aircraft</title>
+    <title th:text="#{page.title.add_aircraft}"></title>
     <div th:replace="layout/master-page :: header-css"/>
     <style type="text/css"></style>
 </head>
@@ -14,8 +14,8 @@
     <th:block layout:fragment="content">
         <div class="row">
             <div class="row">
-                <div class="col-md-12" style="margin-bottom: 10px">
-                    <h1 style="color: darkblue">Add New Aircraft </h1>
+                <div class="col-md-8">
+                    <h1 style="color: #2d3748; margin-top: 2rem;" th:text="#{heading.add_new_aircraft}"></h1>
                 </div>
 
             </div>
@@ -26,7 +26,7 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label class="col-form-label" for="manufacturer">Manufacturer</label>
+                        <label class="col-form-label" for="manufacturer" th:text="#{form.manufacturer}"></label>
                         <span class="badge badge-danger" th:errors="*{manufacturer}"
                               th:if="${#fields.hasErrors('manufacturer')}"></span>
                         <input class="form-control" id="manufacturer" name="manufacturer" placeholder=""
@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-form-label" for="model">Model</label>
+                        <label class="col-form-label" for="model" th:text="#{form.model}"></label>
                         <span class="badge badge-danger" th:errors="*{model}"
                               th:if="${#fields.hasErrors('model')}"></span>
                         <input class="form-control" id="model" name="model" placeholder=""
@@ -42,7 +42,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-form-label" for="numberOfSeats">Number of seats</label>
+                        <label class="col-form-label" for="numberOfSeats" th:text="#{form.number_of_seats}"></label>
                         <span class="badge badge-danger" th:errors="*{numberOfSeats}"
                               th:if="${#fields.hasErrors('numberOfSeats')}"></span>
                         <input class="form-control" id="numberOfSeats" name="numberOfSeats" placeholder=""
@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="form-group">
-                        <button id = "btnSave" class="btn btn-success" style="float: right" type="submit">Save</button>
+                        <button id="btnSave" class="btn-orange" style="width: 100%; text-align: center;" type="submit" th:text="#{button.save}"></button>
                     </div>
 
                 </div>

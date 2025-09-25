@@ -1,58 +1,78 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
-<!-- layout:decorate="~{layout/master-page}">-->
 <head>
-    <title>Log in</title>
+    <title th:text="#{page.title.signin}"></title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <div th:replace="layout/master-page :: header-css"/>
-    <style type="text/css"></style>
+    <link rel="stylesheet" href="/css/auth-pages.css">
 </head>
 <body>
-<div class="header" th:replace="layout/master-page :: header"/>
-<div class="container">
-    <th:block layout:fragment="content">
-        <div class="row justify-content-md-center">
-            <div class="col-md-4 jumbotron" style="padding: 20px; margin: 0 15px;">
-                <h2 style="text-align: center">Login Form</h2>
+    <!-- Background Grid -->
+    <div class="auth-background login-background">
+        <div class="bg-item" style="background-image: url('/img/pic1.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic2.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic3.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic4.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic5.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic6.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic7.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic8.jpg');"></div>
+        <div class="bg-item" style="background-image: url('/img/pic9.jpg');"></div>
+    </div>
 
-                <form method="post" name="formLogin" th:action="@{/login}">
-                    <div class="alert alert-dismissible alert-danger" th:if="${param.error}">
-                        <button class="close" data-dismiss="alert" type="button">&times;</button>
-                        Invalid username and/or password.
-                    </div>
-                    <div class="alert alert-dismissible alert-primary" th:if="${param.logout}">
-                        <button class="close" data-dismiss="alert" type="button">&times;</button>
-                        You have been signed out.
-                    </div>
-                    <div class="alert alert-dismissible alert-success" th:if="${param.registered}">
-                        <button class="close" data-dismiss="alert" type="button">&times;</button>
-                        Registration successful! Please log in.
-                    </div>
-                    <div class="form-group">
-                        <label for="txtUsername">Username</label>
-                        <!-- <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
-                              class="alert alert-danger"></span> -->
-                        <input autofocus="autofocus" class="form-control" id="txtUsername" name="username" type="text"/>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label for="txtPassword">Password</label>
-                        <!-- <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-                              class="alert alert-danger"></span> -->
-                        <input class="form-control" id="txtPassword" name="password" type="password"/>
-                    </div>
-                    <div style="text-align: right; margin-right: 20px; margin-top: 15px;">
-                        <a class="btn btn-outline-warning" href="/">Cancel</a>&nbsp;&nbsp;&nbsp;
-                        <button class="btn btn-outline-success" id="btnSubmit" type="submit">Sign In</button>
-                    </div>
-                </form>
+    <div class="auth-wrapper login-wrapper">
+        <div class="auth-box login-box">
+            <h1 th:text="#{auth.welcome_back}"></h1>
+            <p th:text="#{auth.signin_subtitle}"></p>
 
-                <div style="text-align: center; margin-top: 25px; padding: 0 20px;">
-                    <p style="margin-bottom: 0;">Don't have an account? <a href="/register">Register here</a></p>
+            <form method="post" th:action="@{/login}">
+                <!-- Alerts -->
+                <div class="alert alert-error" th:if="${param.error}">
+                    <i data-feather="alert-circle" style="width: 16px; height: 16px;"></i>
+                    <span th:text="#{auth.error.invalid_credentials}"></span>
                 </div>
+                <div class="alert alert-info" th:if="${param.logout}">
+                    <i data-feather="info" style="width: 16px; height: 16px;"></i>
+                    <span th:text="#{auth.info.signed_out}"></span>
+                </div>
+                <div class="alert alert-success" th:if="${param.registered}">
+                    <i data-feather="check-circle" style="width: 16px; height: 16px;"></i>
+                    <span th:text="#{auth.success.registered}"></span>
+                </div>
+
+                <!-- Username -->
+                <div class="input-group">
+                    <label for="username" th:text="#{auth.username}"></label>
+                    <input id="username" name="username" type="text" required autofocus>
+                </div>
+
+                <!-- Password -->
+                <div class="input-group">
+                    <label for="password" th:text="#{auth.password}"></label>
+                    <input id="password" name="password" type="password" required>
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-group">
+                    <a href="/" class="btn btn-cancel">
+                        <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i>
+                        <span th:text="#{auth.cancel}"></span>
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="log-in" style="width: 16px; height: 16px;"></i>
+                        <span th:text="#{auth.signin}"></span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="bottom-link">
+                <p><span th:text="#{auth.no_account}"></span> <a href="/register" th:text="#{auth.register_here}"></a></p>
             </div>
         </div>
-    </th:block>
-</div>
+    </div>
+
+    <script src="/js/common.js"></script>
 </body>
 </html>

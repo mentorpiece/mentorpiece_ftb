@@ -150,6 +150,7 @@ public class FlightsGuiController {
     }
 
     @GetMapping("/flight/search")
+    @PreAuthorize("isAuthenticated()")
     public String showSearchFlightPage(Model model) {
         log.info("About to show the search flights page");
         model.addAttribute(ATTR_AIRPORTS, airportService.getAll());
@@ -158,6 +159,7 @@ public class FlightsGuiController {
     }
 
     @PostMapping("/flight/search")
+    @PreAuthorize("isAuthenticated()")
     public String searchFlight(@RequestParam("departureAirport") long departureAirport,
                                @RequestParam("destinationAirport") long destinationAirport,
                                @RequestParam("departureTime") String departureTime,
@@ -167,6 +169,7 @@ public class FlightsGuiController {
     }
 
     @GetMapping("/flight/book")
+    @PreAuthorize("isAuthenticated()")
     public String showBookFlightPage(Model model) {
         log.info("About to show the flight page");
         model.addAttribute(ATTR_AIRPORTS, airportService.getAll());
@@ -174,6 +177,7 @@ public class FlightsGuiController {
     }
 
     @PostMapping("/flight/book")
+    @PreAuthorize("isAuthenticated()")
     public String searchFlightToBook(@RequestParam("departureAirport") long departureAirport,
                                      @RequestParam("destinationAirport") long destinationAirport,
                                      @RequestParam("departureTime") String departureTime,

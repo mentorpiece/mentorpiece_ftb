@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
 <html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Flights list</title>
+    <title th:text="#{page.title.flights_list}"></title>
     <div th:replace="layout/master-page :: header-css"/>
     <style type="text/css"></style>
 </head>
@@ -14,23 +14,28 @@
     <th:block layout:fragment="content">
         <div class="row" style="margin-bottom: 10px">
             <div class="col-md-6">
-                <h1 style="color: darkblue">Flights</h1>
+                <h1 style="color: #2d3748; margin-top: 4rem;" th:text="#{nav.flights}"></h1>
+            </div>
+            <div class="col-md-6" sec:authorize="hasRole('ADMIN')">
+                <a href="/flight/new">
+                    <button id="btnNewFlight" class="btn-add" style="float: right; margin-top: 4rem;" type="button" th:text="#{flight.add_flight}"></button>
+                </a>
             </div>
         </div>
-        <table id = "tblFlights" class="table table-sm">
+        <table id="tblFlights" class="table table-hover">
             <thead>
             <tr class="table-active">
-                <th scope="col">ID</th>
-                <th scope="col">Flight Number</th>
-                <th scope="col">From</th>
-                <th scope="col">To</th>
-                <th scope="col">Departure</th>
-                <th scope="col">Arrival</th>
-                <th scope="col">Status</th>
-                <th scope="col">Gate</th>
-                <th scope="col">Flight Charge</th>
-                <th scope="col">Aircraft</th>
-                <th scope="col">Available Seats</th>
+                <th scope="col" th:text="#{flight.table.id}"></th>
+                <th scope="col" th:text="#{flight.table.number}"></th>
+                <th scope="col" th:text="#{flight.table.from}"></th>
+                <th scope="col" th:text="#{flight.table.to}"></th>
+                <th scope="col" th:text="#{flight.table.departure}"></th>
+                <th scope="col" th:text="#{flight.table.arrival}"></th>
+                <th scope="col" th:text="#{flight.table.status}"></th>
+                <th scope="col" th:text="#{flight.table.gate}"></th>
+                <th scope="col" th:text="#{flight.table.charge}"></th>
+                <th scope="col" th:text="#{flight.table.aircraft}"></th>
+                <th scope="col" th:text="#{flight.table.available_seats}"></th>
                 <th scope="col"></th>
                 <th scope="col"></th>
             </tr>
@@ -38,7 +43,7 @@
             <tbody>
             <div th:each="flight, iterStat:${flights}">
                 <tr style="background-color: #fdfdfd" th:class="${iterStat.even}? 'table-active'">
-                    <th scope="row" th:text="${flight.flightId}">Dark</th>
+                    <th scope="row" th:text="${flight.flightId}"></th>
                     <td th:text="${flight.flightNumber}"></td>
                     <td th:text="${flight.departureAirport.airportName}+' \ '+${flight.departureAirport.airportCode}"></td>
                     <td th:text="${flight.destinationAirport.airportName}+' / '+${flight.destinationAirport.airportCode}"></td>
@@ -52,7 +57,7 @@
                     <td></td>
                     <td>
                         <a class="navbar-brand" href="/flight/search">
-                            <img height="20" src="/img/aero-ico_.png">
+                            <img height="20" src="/img/aero-ico_.png" th:alt="#{nav.search}">
                         </a>
                     </td>
                 </tr>
@@ -62,11 +67,11 @@
         <div>
             <ul class="pagination">
                 <li class="page-item disabled">
-                    <a class="page-link" href="#">#</a>
+                    <a class="page-link" href="#" th:text="#{flight.pagination.pages}"></a>
                 </li>
                 <th:block th:each="i:${#numbers.sequence(1,flights.totalPages)}">
                     <li th:class="${currentPage}==(${i-1}) ? 'page-item active' : 'page-item'">
-                        <a class="page-link" th:href="@{/flights_list(pageNo=(${i-1}))}" th:text="${i}"></a>
+                        <a class="page-link" th:href="@{/flights_list(pageNo=(${i-1}))}" th:text="${i}">1</a>
                     </li>
                 </th:block>
             </ul>
@@ -81,7 +86,6 @@
                 </div>
             </th:block>
         </div>
-
     </th:block>
 </div>
 </body>

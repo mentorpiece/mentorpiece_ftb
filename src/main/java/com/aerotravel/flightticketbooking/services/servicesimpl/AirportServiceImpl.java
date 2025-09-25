@@ -85,13 +85,14 @@ public class AirportServiceImpl extends AbstractEntityServiceImpl<Airport> imple
         return airportRepository.save(airport);
     }
 
-    // SECURITY OVERRIDES - Ensure user ownership validation
-
+    // User-specific operations that enforce ownership validation
     @Override
     public Airport getById(Long entityId) {
         if (null == entityId) throw new IllegalArgumentException("Entity ID shall not be null.");
         Airport entity = airportRepository.findById(entityId)
                 .orElseThrow(() -> new EntityNotFoundException("Airport not found with id: " + entityId));
+        
+        // For user-specific operations, validate ownership
         User currentUser = userService.getCurrentUser();
         if (!entity.getOwner().getId().equals(currentUser.getId())) {
             throw new EntityNotFoundException("Airport not found with id: " + entityId);
@@ -103,7 +104,9 @@ public class AirportServiceImpl extends AbstractEntityServiceImpl<Airport> imple
     public Optional<Airport> getOptionallyById(Long entityId) {
         if (null == entityId) return Optional.empty();
         Optional<Airport> entity = airportRepository.findById(entityId);
+        
         if (entity.isPresent()) {
+            // For user-specific operations, validate ownership
             User currentUser = userService.getCurrentUser();
             if (!entity.get().getOwner().getId().equals(currentUser.getId())) {
                 return Optional.empty();

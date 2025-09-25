@@ -93,6 +93,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                requestPath.equals("/api/auth/refresh") ||
                requestPath.equals("/login") ||
                requestPath.equals("/register") ||
+               requestPath.equals("/promo") ||
                requestPath.equals("/switch-role") ||  // Allow session-based role switching
                requestPath.startsWith("/css/") ||
                requestPath.startsWith("/js/") ||

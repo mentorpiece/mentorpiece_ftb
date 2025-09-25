@@ -60,11 +60,19 @@ public class WebSecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(authz -> authz
                         // Public endpoints
-                        .requestMatchers("/", "/flights_list", "/flight/search", "/flight/book/verify", "/flight/book/cancel", "/img/**", "/register", "/login").permitAll()
+                        .requestMatchers("/", "/flights_list", "/flight/search", "/flight/book/verify", "/flight/book/cancel", "/register", "/login", "/promo", "/promo/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        
+                        // Static resources - favicon and other assets
+                        .requestMatchers("/favicon.ico", "/robots.txt").permitAll()
+                        .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/img/**", "/webjars/**").permitAll()
+                        .requestMatchers("/*.js", "/*.css", "/*.html", "/*.png", "/*.jpg", "/*.gif", "/*.svg", "/*.ico").permitAll()
                         
                         // OAuth 2.0 / JWT Authentication endpoints
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh").permitAll()
+                        
+                        // Promo-related API endpoints
+                        .requestMatchers("/api/promo/**").permitAll()
                         
                         // API endpoints requiring authentication - JWT or Basic Auth
                         .requestMatchers("/api/auth/me", "/api/auth/logout").authenticated()
@@ -72,10 +80,9 @@ public class WebSecurityConfig {
                         
                         // Web endpoints with role-based access - Session-based
                         .requestMatchers("/switch-role", "/api/current-user", "/current-user", "/api/switch-role").hasAnyRole("ADMIN", "AGENT", "USER")
-                        .requestMatchers("/flight/book**", "/flight/book/new").hasRole("AGENT")
+                        .requestMatchers("/flight/book**", "/flight/book/new").hasAnyRole("ADMIN", "AGENT")
                         .requestMatchers("/user/**").hasAnyRole("ADMIN", "AGENT")
                         .requestMatchers("/flights", "/flight/search", "/flight/book/verify").hasAnyRole("ADMIN", "AGENT", "USER")
-                        .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/img/**").permitAll()
                         .requestMatchers("/**").hasAnyRole("ADMIN", "AGENT")
                         .anyRequest().authenticated()
                 )

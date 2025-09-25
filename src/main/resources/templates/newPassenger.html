@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>New passenger</title>
+    <title th:text="#{page.title.new_passenger}"></title>
     <div th:replace="layout/master-page :: header-css"/>
     <style type="text/css"></style>
 </head>
@@ -13,8 +13,8 @@
     <th:block layout:fragment="content">
         <div class="row">
             <div class="row">
-                <div class="col-md-12" style="margin-bottom: 10px">
-                    <h1 style="color: darkblue">Passenger Information</h1>
+                <div class="col-md-8">
+                    <h1 style="color: #2d3748; margin-top: 2rem;" th:text="#{heading.passenger_information}"></h1>
                 </div>
 
             </div>
@@ -25,7 +25,7 @@
                 <input name="flightId" th:value="${flightId}" type="hidden">
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="firstName">First Name</label>
+                    <label class="col-form-label" for="firstName" th:text="#{form.first_name}"></label>
                     <span class="badge badge-danger" th:errors="*{firstName}"
                           th:if="${#fields.hasErrors('firstName')}"></span>
                     <input class="form-control" id="firstName" name="firstName" placeholder=""
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="lastName">Last Name</label>
+                    <label class="col-form-label" for="lastName" th:text="#{form.last_name}"></label>
                     <span class="badge badge-danger" th:errors="*{lastName}"
                           th:if="${#fields.hasErrors('lastName')}"></span>
                     <input class="form-control" id="lastName" name="lastName" placeholder=""
@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="phoneNumber">Phone Number</label>
+                    <label class="col-form-label" for="phoneNumber" th:text="#{form.phone_number}"></label>
                     <span class="badge badge-danger" th:errors="*{phoneNumber}"
                           th:if="${#fields.hasErrors('phoneNumber')}"></span>
                     <input class="form-control" id="phoneNumber" name="phoneNumber" placeholder=""
@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="passportNumber">Passport Number</label>
+                    <label class="col-form-label" for="passportNumber" th:text="#{form.passport_number}"></label>
                     <span class="badge badge-danger" th:errors="*{passportNumber}"
                           th:if="${#fields.hasErrors('passportNumber')}"></span>
                     <input class="form-control" id="passportNumber" name="passportNumber" placeholder=""
@@ -57,15 +57,15 @@
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="email">Email Address</label>
+                    <label class="col-form-label" for="email" th:text="#{form.email_address}"></label>
                     <span class="badge badge-danger" th:errors="*{email}"
                           th:if="${#fields.hasErrors('email')}"></span>
                     <input class="form-control" id="email" name="email" placeholder=""
-                           th:value="${passenger.email}" type="email">
+                           required th:value="${passenger.email}" type="email">
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label class="col-form-label" for="address">Address</label>
+                    <label class="col-form-label" for="address" th:text="#{form.address}"></label>
                     <span class="badge badge-danger" th:errors="*{address}"
                           th:if="${#fields.hasErrors('address')}"></span>
                     <input class="form-control" id="address" name="address" placeholder=""
@@ -73,7 +73,7 @@
                 </div>
 
                 <div class="form-group col-12">
-                    <button id = "btnSave" class="btn btn-success" style="float: right" type="submit">Save</button>
+                    <button id="btnSave" class="btn-orange" style="width: 100%; text-align: center;" type="submit" th:text="#{button.save}"></button>
                 </div>
 
             </div>

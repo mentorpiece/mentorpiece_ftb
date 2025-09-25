@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="#{page.title.promo}"></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <div th:replace="layout/master-page :: header-css"/>
+        <link rel="stylesheet" href="/css/auth-pages.css">
+
+        <style>
+            .btn.btn-cancel:hover {
+                cursor: wait;
+            }
+
+            h1 {
+                text-align: left;
+            }
+            
+            .promo-box {
+                background: rgba(0, 0, 0, 0.3)
+            }
+        </style>
+    </head>
+    <body>
+        <div class="auth-background promo-background">
+            <div class="bg-item" style="background-image: url('/img/pic1.jpg');"></div>
+            <div class="bg-item" style="background-image: url('/img/pic2.jpg');"></div>
+            <div class="bg-item" style="background-image: url('/img/pic3.jpg');"></div>
+            <div class="bg-item" style="background-image: url('/img/pic4.jpg');"></div>
+            <div class="bg-item" style="background-image: url('/img/pic5.jpg');"></div>
+            <div class="bg-item" style="background-image: url('/img/pic6.jpg');"></div>
+            <div class="bg-item" style="background-image: url('/img/pic7.jpg');"></div>
+            <div class="bg-item" style="background-image: url('/img/pic8.jpg');"></div>
+            <div class="bg-item" style="background-image: url('/img/pic0.jpg');"></div>
+        </div>
+
+        <div class="auth-wrapper promo-wrapper">
+            <div class="auth-box promo-box">
+                <h1 th:text="#{promo.title}"></h1>
+                <p th:text="#{promo.subtitle}"></p>
+
+                <form action="api/promo/submit" method="post">
+                    <div class="input-group">
+                        <label for="email" th:text="#{promo.email}"></label>
+                        <input id="email" name="email" type="text" required autofocus>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="promoCode" th:text="#{promo.code}"></label>
+                        <input id="promoCode" name="promoCode" type="email" required>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" onclick="window.location.href='/'" class="btn btn-cancel clock">
+                            <i data-feather="arrow-left" style="width: 16px; height: 16px;"></i>
+                            <span th:text="#{promo.cancel}"></span>
+                        </button>
+                        
+                        <button type="submit" class="btn btn-primary" style="background: #fb6b00 !important;">
+                            <i data-feather="tag" style="width: 16px; height: 16px;"></i>
+                            <span th:text="#{promo.apply}"></span>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="bottom-link">
+                    <p><span th:text="#{promo.back_text}"></span> <a href="/login" th:text="#{promo.back_login}"></a></p>
+                </div>
+            </div>
+        </div>
+
+        
+        <script src="/js/common.js"></script>
+        <script>
+            let student = 5;
+            print(students);
+        </script>
+        
+        <script>  
+            const form = document.querySelector('form');
+
+            try {
+                // Obfuscated values
+                const sf = atob('NTIzNDA5ODE=');
+                const qs = atob('YWIzMGQ='); 
+                localStorage.setItem('simFlag', sf);
+                document.cookie = 'qa_session=' + qs + '; path=/';
+            } catch (e) {}
+
+            // Background API "ping" check
+            fetch('api/promo/ping').then(r => r.json()).then(data => console.log('PING:', data)).catch(err => console.warn('PING error', err));
+
+            // Intentional 404 for training Network status reading
+            fetch('/static/imgo.jpg').catch(() => {});
+
+            // Additional requests for "Proxy" and "Network" topics
+            fetch('api/promo/slow').then(r => r.json()).then(d => console.log('SLOW:', d));
+            fetch('api/promo/redirect', {redirect: 'follow'}).then(r => r.text()).then(() => console.log('REDIRECT done'));
+            fetch('api/promo/set_cookie').then(r => r.json()).then(d => console.log('SET_COOKIE:', d));
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                // Intentional error for Console: calling method on undefined
+                let formData = undefined;
+                formData.sendData();
+
+                // Real form submission via Fetch (after student fixes the error)
+                try {
+                    const payload = {
+                    name: document.getElementById('name_field').value,
+                    email: document.getElementById('email_field').value
+                    };
+                    const resp = await fetch('api/promo/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                    });
+                    const data = await resp.json();
+                    console.log('Submit response:', data);
+
+                    // Additional POST /api/echo to demonstrate body/header modification in proxy
+                    await fetch('api/promo/echo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Debug': '1' },
+                    body: JSON.stringify({ action: 'echo', ts: Date.now() })
+                    });
+                } catch (e) {
+                    console.error('Submit failed', e);
+                }
+            });
+        </script>
+    </body>
+</html>

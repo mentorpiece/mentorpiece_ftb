@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
@@ -30,10 +31,25 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
+        // Don't handle missing resources as 500 errors
+        if (ex.getMessage() != null && ex.getMessage().contains("Resource not found")) {
+            return handleNotFound(ex, request);
+        }
         log.error("Something went wrong upon handling the request: {}", request, ex);
         var error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(),
                 "Server Error", findAllCauses(ex));
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Object> handleNoResourceFound(NoResourceFoundException ex, WebRequest request) {
+        log.debug("Resource not found: {}", ex.getMessage());
+        var error = new ErrorResponse(
+            HttpStatus.NOT_FOUND.toString(),
+            "Resource not found",
+            List.of(ex.getMessage())
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -49,10 +65,10 @@ public class RestExceptionHandler {
     @ExceptionHandler({EntityNotFoundException.class})
     protected ResponseEntity<Object> handleNotFound(
             Exception ex, WebRequest request) {
-        log.error("Entity was not found upon handling the request: {}", request, ex);
+        log.warn("Resource was not found upon handling the request: {}", request.getDescription(false));
         var details = List.of(ex.getLocalizedMessage());
         var error = new ErrorResponse(HttpStatus.NOT_FOUND.toString(),
-                "Entity not found.", details);
+                "Resource not found", details);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 

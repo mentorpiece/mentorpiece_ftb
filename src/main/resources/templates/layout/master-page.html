@@ -5,299 +5,259 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Aero Travel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{page.title.default}"></title>
     <div th:fragment="header-css">
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+        <!-- Bootstrap CSS (for grid system only) -->
         <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
               integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
               rel="stylesheet">
-        <style>
-            .dropdown-menu {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                z-index: 1000;
-                display: none;
-                min-width: 160px;
-                padding: 0.5rem 0;
-                margin: 0;
-                font-size: 0.875rem;
-                color: #212529;
-                text-align: left;
-                list-style: none;
-                background-color: #fff;
-                background-clip: padding-box;
-                border: 1px solid rgba(0,0,0,.15);
-                border-radius: 0.375rem;
-            }
-            .dropdown-menu.show {
-                display: block;
-            }
-            .dropdown-item:hover {
-                background-color: #e9ecef;
-            }
-        </style>
+
+        <!-- Modern Design System - MUST LOAD AFTER BOOTSTRAP -->
+        <link rel="stylesheet" href="/css/modern-design.css?v=20250924-table-shadow">
+        
+        <!-- Master Page Styles - Navigation and Layout Components -->
+        <link rel="stylesheet" href="/css/master-page.css">
+
+        <!-- Feather Icons -->
+        <script src="https://unpkg.com/feather-icons"></script>
     </div>
 
 </head>
 <body>
 <div th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="margin-bottom: 20px">
-        <a class="navbar-brand" href="#">
-            <img height="25" src="/img/aero-ico.png">
-            FTB
-        </a>
+    <!-- Modern Navigation -->
+    <nav class="modern-navbar">
+        <div class="container-modern">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <!-- Brand Logo -->
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <img height="70" src="/img/logo.png" th:alt="#{common.alt.logo}" class="brand-logo">
+                </a>
 
-        <button aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
-                data-target="#navbarColor02" data-toggle="collapse" type="button">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+                <!-- Mobile Hamburger Button -->
+                <button class="mobile-menu-toggle d-lg-none" onclick="toggleMobileMenu()" id="mobileMenuToggle">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
 
-        <div class="collapse navbar-collapse" id="navbarColor02">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a id = "aHome" class="nav-link" href="/">Home</a>
-                </li>
-                <!-- Show all options for users since they can switch roles -->
-                <th:block sec:authorize="isAuthenticated()">
-                    <li class="nav-item">
-                        <a id = "aFlights" class="nav-link" href="/flights">Flights</a>
-                    </li>
-                    <li class="nav-item" id="aircraftMenuItem">
-                        <a id = "aAircrafts" class="nav-link" href="/aircrafts">Aircraft</a>
-                    </li>
-                    <li class="nav-item" id="airportMenuItem">
-                        <a id = "aAirports" class="nav-link" href="/airports">Airports</a>
-                    </li>
-                    <li class="nav-item" id="bookingMenuItem" style="display: none;">
-                        <a id = "aBooking" class="nav-link" href="/flight/book">Book</a>
-                    </li>
-                    <li class="nav-item">
-                        <a id = "aSearch" class="nav-link" href="/flight/search">Search</a>
-                    </li>
-                </th:block>
+                <!-- Desktop Navigation Links -->
+                <div class="d-none d-lg-flex align-items-center gap-3 desktop-nav">
+                    <a id="aHome" class="nav-link" href="/">
+                        <i data-feather="home" class="nav-icon"></i>
+                        <span th:text="#{nav.home}"></span>
+                    </a>
 
-            </ul>
+                    <!-- Show navigation options for authenticated users -->
+                    <th:block sec:authorize="isAuthenticated()">
+                        <a id="aFlights" class="nav-link" href="/flights">
+                            <i data-feather="calendar" class="nav-icon"></i>
+                            <span th:text="#{nav.flights}"></span>
+                        </a>
+                        <a id="aAircrafts" class="nav-link role-restricted" href="/aircrafts" data-menu="aircraft">
+                            <i data-feather="send" class="nav-icon"></i>
+                            <span th:text="#{nav.aircraft}"></span>
+                        </a>
+                        <a id="aAirports" class="nav-link role-restricted" href="/airports" data-menu="airport">
+                            <i data-feather="map-pin" class="nav-icon"></i>
+                            <span th:text="#{nav.airports}"></span>
+                        </a>
+                        <a id="aBooking" class="nav-link role-restricted" href="/flight/book" data-menu="booking">
+                            <i data-feather="credit-card" class="nav-icon"></i>
+                            <span th:text="#{nav.book}"></span>
+                        </a>
+                        <a id="aSearch" class="nav-link" href="/flight/search">
+                            <i data-feather="search" class="nav-icon"></i>
+                            <span th:text="#{nav.search}"></span>
+                        </a>
+                    </th:block>
+                </div>
 
-            <div class="navbar-nav ms-auto">
-                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
-                    <svg class="bi bi-person-circle me-2" fill="white" height="20" viewBox="0 0 16 16"
-                         width="20" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path>
-                        <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
-                              fill-rule="evenodd"></path>
-                    </svg>
-                    <span id = "spUsername" sec:authentication="principal.username" class="text-white me-2 small"></span>
+                <!-- Desktop User Section -->
+                <div class="d-none d-lg-flex align-items-center gap-3 desktop-user">
+                    <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-3">
+                        <!-- Role Badge -->
+                        <span id="currentRoleBadge" class="role-text" onclick="toggleUserMenu()">
+                            <i data-feather="user" class="nav-icon"></i>
+                            <span th:text="#{nav.user}"></span>
+                        </span>
 
-                    <!-- Role Switching Dropdown -->
-                    <div class="dropdown me-2">
-                        <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="roleDropdown"
-                                data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                                onclick="toggleDropdown()">
-                            <span id="currentRoleDisplay">Role</span>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="roleDropdown" id="roleDropdownMenu">
-                            <a class="dropdown-item" href="javascript:void(0)" onclick="switchRole('ROLE_USER')">👤 User</a>
-                            <a class="dropdown-item" href="javascript:void(0)" onclick="switchRole('ROLE_AGENT')">🎫 Agent</a>
-                            <a class="dropdown-item" href="javascript:void(0)" onclick="switchRole('ROLE_ADMIN')">⚙️ Admin</a>
+                        <!-- User Menu -->
+                        <div class="position-relative">
+                            <div class="user-avatar" onclick="toggleUserMenu()" id="userMenuTrigger">
+                                <span sec:authentication="name">U</span>
+                            </div>
+                            <div class="modern-dropdown" id="userDropdownMenu">
+                                <h6 class="px-3 text-xs text-muted text-uppercase mb-2" th:text="#{nav.switch_role}"></h6>
+                                <a class="modern-dropdown-item" href="javascript:void(0)" onclick="switchRole('ROLE_USER')">
+                                    <i data-feather="user" class="nav-icon"></i>
+                                    <span th:text="#{nav.user}"></span>
+                                </a>
+                                <a class="modern-dropdown-item" href="javascript:void(0)" onclick="switchRole('ROLE_AGENT')">
+                                    <i data-feather="briefcase" class="nav-icon"></i>
+                                    <span th:text="#{nav.agent}"></span>
+                                </a>
+                                <a class="modern-dropdown-item" href="javascript:void(0)" onclick="switchRole('ROLE_ADMIN')">
+                                    <i data-feather="settings" class="nav-icon"></i>
+                                    <span th:text="#{nav.admin}"></span>
+                                </a>
+
+                                <div class="border-top border-light mt-2 pt-2">
+                                    <a href="/logout" class="modern-dropdown-item text-error">
+                                        <i data-feather="log-out" class="nav-icon"></i>
+                                        <span th:text="#{nav.sign_out}"></span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <a href="/logout" class="btn btn-outline-light btn-sm" style="margin-right: 15px;">Logout</a>
+                    <div sec:authorize="!isAuthenticated()">
+                        <a id="aLogin" class="nav-link" href="/login">
+                            <i data-feather="log-in" class="nav-icon"></i>
+                            <span th:text="#{nav.sign_in}"></span>
+                        </a>
+                    </div>
                 </div>
-                <div sec:authorize="!isAuthenticated()" style="margin-right: 15px;">
-                    <a id = "aLogin" class="btn btn-success btn-sm" href="/login">Login</a>
+            </div>
+
+            <!-- Mobile Navigation Menu -->
+            <div class="mobile-nav-menu" id="mobileNavMenu">
+                <div class="mobile-nav-content">
+                    <!-- Navigation Links -->
+                    <div class="mobile-nav-section">
+                        <a class="mobile-nav-item" href="/">
+                            <i data-feather="home" class="nav-icon"></i>
+                            <span th:text="#{nav.home}"></span>
+                        </a>
+
+                        <th:block sec:authorize="isAuthenticated()">
+                            <a class="mobile-nav-item" href="/flights">
+                                <i data-feather="calendar" class="nav-icon"></i>
+                                <span th:text="#{nav.flights}"></span>
+                            </a>
+                            <a class="mobile-nav-item role-restricted" href="/aircrafts" data-menu="aircraft">
+                                <i data-feather="send" class="nav-icon"></i>
+                                <span th:text="#{nav.aircraft}"></span>
+                            </a>
+                            <a class="mobile-nav-item role-restricted" href="/airports" data-menu="airport">
+                                <i data-feather="map-pin" class="nav-icon"></i>
+                                <span th:text="#{nav.airports}"></span>
+                            </a>
+                            <a class="mobile-nav-item role-restricted" href="/flight/book" data-menu="booking">
+                                <i data-feather="credit-card" class="nav-icon"></i>
+                                <span th:text="#{nav.book}"></span>
+                            </a>
+                            <a class="mobile-nav-item" href="/flight/search">
+                                <i data-feather="search" class="nav-icon"></i>
+                                <span th:text="#{nav.search}"></span>
+                            </a>
+                        </th:block>
+                    </div>
+
+                    <!-- User Section -->
+                    <div class="mobile-nav-section border-top" sec:authorize="isAuthenticated()">
+                        <div class="mobile-user-info">
+                            <div class="mobile-user-avatar">
+                                <span sec:authentication="name">U</span>
+                            </div>
+                            <div class="mobile-user-details">
+                                <div class="mobile-user-name" sec:authentication="name">Username</div>
+                                <div class="mobile-user-role" id="mobileCurrentRole" th:text="#{nav.user}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mobile-role-section">
+                            <h6 class="mobile-section-title" th:text="#{nav.switch_role}"></h6>
+                            <a class="mobile-nav-item" href="javascript:void(0)" onclick="switchRole('ROLE_USER')">
+                                <i data-feather="user" class="nav-icon"></i>
+                                <span th:text="#{nav.user}"></span>
+                            </a>
+                            <a class="mobile-nav-item" href="javascript:void(0)" onclick="switchRole('ROLE_AGENT')">
+                                <i data-feather="briefcase" class="nav-icon"></i>
+                                <span th:text="#{nav.agent}"></span>
+                            </a>
+                            <a class="mobile-nav-item" href="javascript:void(0)" onclick="switchRole('ROLE_ADMIN')">
+                                <i data-feather="settings" class="nav-icon"></i>
+                                <span th:text="#{nav.admin}"></span>
+                            </a>
+                        </div>
+
+                        <a href="/logout" class="mobile-nav-item text-error">
+                            <i data-feather="log-out" class="nav-icon"></i>
+                            <span th:text="#{nav.sign_out}"></span>
+                        </a>
+                    </div>
+
+                    <div class="mobile-nav-section" sec:authorize="!isAuthenticated()">
+                        <a class="mobile-nav-item btn-primary" href="/login">
+                            <i data-feather="log-in" class="nav-icon"></i>
+                            <span th:text="#{nav.sign_in}"></span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
-    <div class="container">
+
+    <!-- Main Content Container -->
+    <div class="container-modern animate-fade-in">
         <th:block layout:fragment="content"></th:block>
     </div>
+
+    <!-- Language Switcher Footer -->
+    <footer class="language-switcher-footer">
+        <div class="container-modern">
+            <div class="language-switcher">
+                <span class="language-label" th:text="#{common.language}"></span>
+                <div class="language-options">
+                    <a href="?lang=en" class="language-option" th:classappend="${#locale.language == 'en'} ? 'active' : ''">
+                        <span class="flag-icon">🇺🇸</span>
+                        <span th:text="#{language.english}">English</span>
+                    </a>
+                    <a href="?lang=es" class="language-option" th:classappend="${#locale.language == 'es'} ? 'active' : ''">
+                        <span class="flag-icon">🇪🇸</span>
+                        <span th:text="#{language.spanish}">Español</span>
+                    </a>
+                    <a href="?lang=fr" class="language-option" th:classappend="${#locale.language == 'fr'} ? 'active' : ''">
+                        <span class="flag-icon">🇫🇷</span>
+                        <span th:text="#{language.french}"></span>
+                    </a>                    
+                    <a href="?lang=am" class="language-option" th:classappend="${#locale.language == 'am'} ? 'active' : ''">
+                        <span class="flag-icon">🇦🇲</span>
+                        <span th:text="#{language.armenian}">Հայերեն</span>
+                    </a>
+                    <a href="?lang=ru" class="language-option" th:classappend="${#locale.language == 'ru'} ? 'active' : ''">
+                        <span class="flag-icon">🇷🇺</span>
+                        <span th:text="#{language.russian}">Русский</span>
+                    </a>
+                    <a href="?lang=ch" class="language-option" th:classappend="${#locale.language == 'ch'} ? 'active' : ''">
+                        <span class="flag-icon">🇨🇳</span>
+                        <span th:text="#{language.chinese}">中文</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script crossorigin="anonymous"
             integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
     <script crossorigin="anonymous"
-            integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+            integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9FfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script crossorigin="anonymous"
             integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz"
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"></script>
 
-    <script>
-        // Manual dropdown toggle function as fallback
-        function toggleDropdown() {
-            console.log('Toggle dropdown clicked');
-            const dropdown = document.getElementById('roleDropdownMenu');
-            const button = document.getElementById('roleDropdown');
-
-            if (dropdown.classList.contains('show')) {
-                dropdown.classList.remove('show');
-                button.setAttribute('aria-expanded', 'false');
-            } else {
-                dropdown.classList.add('show');
-                button.setAttribute('aria-expanded', 'true');
-            }
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('roleDropdownMenu');
-            const button = document.getElementById('roleDropdown');
-
-            if (dropdown && button && !button.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.remove('show');
-                button.setAttribute('aria-expanded', 'false');
-            }
-        });
-
-        function switchRole(roleName) {
-            console.log('Switching to role:', roleName);
-
-            // Close the dropdown
-            const dropdown = document.getElementById('roleDropdownMenu');
-            const button = document.getElementById('roleDropdown');
-            if (dropdown && button) {
-                dropdown.classList.remove('show');
-                button.setAttribute('aria-expanded', 'false');
-            }
-
-            // Create a form and submit it
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/switch-role';
-
-            const roleInput = document.createElement('input');
-            roleInput.type = 'hidden';
-            roleInput.name = 'role';
-            roleInput.value = roleName;
-
-            // Add CSRF token if available (Spring Security disabled CSRF, but good practice)
-            const csrfToken = document.querySelector('meta[name="_csrf"]');
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]');
-            if (csrfToken && csrfHeader) {
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = '_csrf';
-                csrfInput.value = csrfToken.getAttribute('content');
-                form.appendChild(csrfInput);
-            }
-
-            form.appendChild(roleInput);
-            document.body.appendChild(form);
-
-            // Immediately update the dropdown text to show switching state
-            const currentRoleDisplay = document.getElementById('currentRoleDisplay');
-            if (currentRoleDisplay) {
-                if (roleName === 'ROLE_USER') {
-                    currentRoleDisplay.textContent = '👤 User';
-                } else if (roleName === 'ROLE_AGENT') {
-                    currentRoleDisplay.textContent = '🎫 Agent';
-                } else if (roleName === 'ROLE_ADMIN') {
-                    currentRoleDisplay.textContent = '⚙️ Admin';
-                }
-            }
-
-            form.submit();
-        }
-
-        // Function to update menu visibility and role display based on current role
-        function updateMenuVisibility() {
-            fetch('/api/current-user')
-                .then(response => response.json())
-                .then(userInfo => {
-                    console.log('Current user info:', userInfo); // Debug log
-                    let roleDisplayText = 'Role';
-
-                    if (userInfo.currentRole === 'ROLE_USER') {
-                        roleDisplayText = '👤 User';
-                        document.getElementById('bookingMenuItem').style.display = 'none';
-                        document.getElementById('aircraftMenuItem').style.display = 'none';
-                        document.getElementById('airportMenuItem').style.display = 'none';
-                    } else if (userInfo.currentRole === 'ROLE_AGENT') {
-                        roleDisplayText = '🎫 Agent';
-                        document.getElementById('bookingMenuItem').style.display = 'block';
-                        document.getElementById('aircraftMenuItem').style.display = 'block';
-                        document.getElementById('airportMenuItem').style.display = 'block';
-                    } else if (userInfo.currentRole === 'ROLE_ADMIN') {
-                        roleDisplayText = '⚙️ Admin';
-                        document.getElementById('bookingMenuItem').style.display = 'none';
-                        document.getElementById('aircraftMenuItem').style.display = 'block';
-                        document.getElementById('airportMenuItem').style.display = 'block';
-                    } else {
-                        document.getElementById('bookingMenuItem').style.display = 'none';
-                        document.getElementById('aircraftMenuItem').style.display = 'none';
-                        document.getElementById('airportMenuItem').style.display = 'none';
-                    }
-
-                    console.log('Setting role display to:', roleDisplayText); // Debug log
-
-                    // Update the dropdown button text to show current role
-                    const currentRoleDisplay = document.getElementById('currentRoleDisplay');
-                    if (currentRoleDisplay) {
-                        currentRoleDisplay.textContent = roleDisplayText;
-                        // Force a re-render by setting innerHTML as well
-                        currentRoleDisplay.innerHTML = roleDisplayText;
-                        console.log('Updated dropdown display to:', currentRoleDisplay.textContent); // Debug log
-                    } else {
-                        console.error('currentRoleDisplay element not found!');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching current user:', error);
-                    // Default to hide restricted menu items on error
-                    document.getElementById('bookingMenuItem').style.display = 'none';
-                    document.getElementById('aircraftMenuItem').style.display = 'none';
-                    document.getElementById('airportMenuItem').style.display = 'none';
-                    // Reset role display
-                    const currentRoleDisplay = document.getElementById('currentRoleDisplay');
-                    if (currentRoleDisplay) {
-                        currentRoleDisplay.textContent = 'Role';
-                    }
-                });
-        }
-
-        // Function to check URL parameters and update role if needed
-        function checkUrlForRoleChange() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const roleChanged = urlParams.get('roleChanged');
-            if (roleChanged) {
-                console.log('Role change detected in URL:', roleChanged);
-                // Force immediate update
-                setTimeout(() => {
-                    updateMenuVisibility();
-                }, 50);
-                setTimeout(() => {
-                    updateMenuVisibility();
-                }, 200);
-                setTimeout(() => {
-                    updateMenuVisibility();
-                }, 500);
-            }
-        }
-
-        // Update menu visibility on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            updateMenuVisibility();
-            checkUrlForRoleChange();
-        });
-
-        // Also update on window load to catch any delayed redirects
-        window.addEventListener('load', function() {
-            updateMenuVisibility();
-            checkUrlForRoleChange();
-        });
-
-        // Periodic check to ensure role display is correct (runs for first 5 seconds)
-        let checkCount = 0;
-        const periodicCheck = setInterval(() => {
-            checkCount++;
-            updateMenuVisibility();
-            if (checkCount >= 10) { // Stop after 10 checks (5 seconds)
-                clearInterval(periodicCheck);
-            }
-        }, 500);
-    </script>
+    <script src="/js/common.js"></script>
+    <script src="/js/navigation.js"></script>
 </div>
 </body>
 </html>

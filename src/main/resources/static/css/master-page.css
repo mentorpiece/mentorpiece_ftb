@@ -1,0 +1,491 @@
+/* =============================================================================
+   FTB - Master Page Styles
+   Common styles for navigation and layout components
+   ============================================================================= */
+
+/* =============================================================================
+   BOOTSTRAP OVERRIDES
+   ============================================================================= */
+
+.navbar {
+    all: unset;
+}
+
+/* Page title spacing fix - ensure proper spacing from navbar */
+.container h1,
+.container-modern h1,
+h1[style*="color: #2d3748"] {
+    margin-top: 2.5rem !important;
+}
+
+/* =============================================================================
+   LANGUAGE SWITCHER STYLES
+   ============================================================================= */
+
+.language-switcher-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(251, 107, 0, 0.2);
+    padding: 12px 0;
+    z-index: 1030;
+    box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.language-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.language-label {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.language-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #4a5568;
+    font-weight: 500;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(251, 107, 0, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.language-option:hover {
+    background: rgba(251, 107, 0, 0.1);
+    color: #FB6B00;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(251, 107, 0, 0.2);
+}
+
+.language-option.active {
+    background: #FB6B00;
+    color: white;
+    border-color: #FB6B00;
+    box-shadow: 0 2px 8px rgba(251, 107, 0, 0.3);
+}
+
+.language-option.active:hover {
+    background: #e5600a;
+    border-color: #e5600a;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.flag-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .language-switcher {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .language-options {
+        justify-content: center;
+    }
+
+    .language-option {
+        padding: 6px 10px;
+        font-size: 12px;
+        border-radius: 16px;
+    }
+
+    .flag-icon {
+        font-size: 14px;
+    }
+}
+
+/* Add padding to body to account for fixed footer */
+body {
+    padding-bottom: 80px;
+}
+
+/* =============================================================================
+   NAVIGATION COMPONENT STYLES
+   ============================================================================= */
+
+/* Button alignment fix - align buttons with h1 titles */
+.btn-add[style*="margin-top"],
+.btn-add {
+    margin-top: 2.5rem !important;
+    padding: var(--spacing-md) var(--spacing-xl) !important;
+    min-width: 120px;
+}
+
+/* Modern dropdown styles */
+.modern-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    display: none;
+    min-width: 200px;
+    padding: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modern-dropdown.show {
+    display: block;
+}
+
+.modern-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.modern-dropdown-item:hover {
+    background: var(--glass-background);
+    transform: translateX(2px);
+    color: var(--color-primary);
+}
+
+/* User avatar */
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.user-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+/* Navigation icons */
+.nav-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: var(--spacing-xs);
+}
+
+/* Role text */
+.role-text {
+    color: #2d3748;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.role-text:hover {
+    color: var(--color-primary);
+}
+
+/* =============================================================================
+   MOBILE NAVIGATION STYLES
+   ============================================================================= */
+
+/* Mobile Hamburger Menu Styles */
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    gap: 4px;
+    transition: all var(--transition-fast);
+}
+
+.hamburger-line {
+    width: 24px;
+    height: 2px;
+    background: var(--color-text-primary);
+    border-radius: 2px;
+    transition: all var(--transition-fast);
+    transform-origin: center;
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Mobile Navigation Menu */
+.mobile-nav-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-base);
+}
+
+.mobile-nav-menu.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-nav-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    max-width: 85vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid var(--glass-border);
+    padding: var(--spacing-lg);
+    transform: translateX(100%);
+    transition: transform var(--transition-base);
+    overflow-y: auto;
+}
+
+.mobile-nav-menu.show .mobile-nav-content {
+    transform: translateX(0);
+}
+
+.mobile-nav-section {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+}
+
+.mobile-nav-section.border-top {
+    border-top: 1px solid var(--glass-border);
+    padding-top: var(--spacing-lg);
+}
+
+.mobile-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    opacity: 0;
+    transform: translateX(20px);
+    animation: slideInStaggered 0.3s ease-out forwards;
+}
+
+.mobile-nav-item:hover {
+    background: rgba(251, 107, 0, 0.1);
+    color: var(--color-primary);
+    transform: translateX(0) scale(1.02);
+}
+
+.mobile-nav-item.text-error {
+    color: var(--color-error);
+}
+
+.mobile-nav-item.text-error:hover {
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--color-error);
+}
+
+/* Mobile User Info */
+.mobile-user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: rgba(251, 107, 0, 0.05);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.mobile-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.mobile-user-details {
+    flex: 1;
+}
+
+.mobile-user-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+}
+
+.mobile-user-role {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+}
+
+.mobile-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+    padding: 0 var(--spacing-md);
+}
+
+/* Staggered Animation */
+@keyframes slideInStaggered {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.mobile-nav-item:nth-child(1) { animation-delay: 0.05s; }
+.mobile-nav-item:nth-child(2) { animation-delay: 0.1s; }
+.mobile-nav-item:nth-child(3) { animation-delay: 0.15s; }
+.mobile-nav-item:nth-child(4) { animation-delay: 0.2s; }
+.mobile-nav-item:nth-child(5) { animation-delay: 0.25s; }
+.mobile-nav-item:nth-child(6) { animation-delay: 0.3s; }
+.mobile-nav-item:nth-child(7) { animation-delay: 0.35s; }
+
+/* =============================================================================
+   MOBILE RESPONSIVE OVERRIDES
+   ============================================================================= */
+
+/* Show mobile menu on tablet and below */
+@media (max-width: 991.98px) {
+    .mobile-menu-toggle {
+        display: flex;
+    }
+}
+
+/* Ensure mobile menu is hidden on large screens */
+@media (min-width: 992px) {
+    .mobile-menu-toggle {
+        display: none !important;
+    }
+
+    .mobile-nav-menu {
+        display: none !important;
+    }
+}
+
+/* Mobile layout fix - ensure proper centering */
+@media (max-width: 991.98px) {
+    html, body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .container,
+    .container-modern {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Fix Bootstrap's container classes */
+    .container-fluid,
+    .container-sm,
+    .container-md,
+    .container-lg,
+    .container-xl,
+    .container-xxl {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Fix the main content wrapper */
+    .animate-fade-in {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Fix table wrapper */
+    .table-responsive {
+        overflow-x: auto !important;
+        width: 100% !important;
+    }
+
+    .modern-navbar .container-modern {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+}
