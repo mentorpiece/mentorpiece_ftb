@@ -188,6 +188,10 @@ public class MainController {
         return showAircraftsList(0, model);
     }
 
+    @GetMapping("/promo")
+    public String showPromoPage() {
+        return "promo";
+    }
 
     @GetMapping("fancy")
     public String showLoginPage1() {

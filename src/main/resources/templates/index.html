@@ -34,12 +34,19 @@
                     <span th:text="#{home.hero.search_flights}"></span>
                 </a>
             </div>
-            
+
             <!-- Show Sign In button for unauthenticated users -->
             <div sec:authorize="!isAuthenticated()">
                 <a href="/login" class="cta-button cta-primary">
                     <i data-feather="log-in"></i>
                     <span th:text="#{nav.sign_in}"></span>
+                </a>
+            </div>
+
+            <div>
+                <a href="/promo" class="cta-button cta-primary">
+                    <i data-feather="promo"></i>
+                    <span th:text="#{promo.code}"></span>
                 </a>
             </div>
         </div>
