@@ -36,6 +36,9 @@ build/
 ### LOGS ###
 *.log
 
+### Local MySQL data ###
+database/mysql_data/
+
 ### Environment Variables ###
 .env
 .env.local

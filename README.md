@@ -2,8 +2,8 @@
 
 A comprehensive flight ticket booking system built with Spring Boot, featuring role-based authentication, REST API, and modern web interface.
 
-**Version:** 1.0.0
-**Forked from:** https://github.com/aliahmadi4/FlightBookingSystem
+**Version:** 1.0.0  
+**Forked from:** https://github.com/aliahmadi4/FlightBookingSystem  
 Many thanks to the authors of the original code.
 
 ## 🛠️ Technology Stack
@@ -19,6 +19,7 @@ Many thanks to the authors of the original code.
 ## 🚀 Features
 
 ### Core Functionality
+
 - ✅ Flight search and booking
 - ✅ Aircraft and airport management
 - ✅ User role management (USER, AGENT, ADMIN)
@@ -26,6 +27,7 @@ Many thanks to the authors of the original code.
 - ✅ Flight status and gate management
 
 ### Security Features
+
 - ✅ Role-based access control
 - ✅ Session-based authentication (web)
 - ✅ JWT Bearer token authentication (API)
@@ -33,6 +35,7 @@ Many thanks to the authors of the original code.
 - ✅ Environment variable configuration
 
 ### API Features
+
 - ✅ RESTful API with OpenAPI documentation
 - ✅ Swagger UI integration
 - ✅ JSON Patch support for partial updates
@@ -41,17 +44,20 @@ Many thanks to the authors of the original code.
 ## 👥 User Roles
 
 ### 🔵 USER Role
+
 - Search flights
 - View flight information
 - Limited UI access (Aircraft/Airport menus hidden)
 
 ### 🟡 AGENT Role
+
 - All USER permissions
 - Book/cancel tickets for passengers
 - Manage flight bookings
 - Access to booking interfaces
 
 ### 🔴 ADMIN Role
+
 - All AGENT permissions
 - Add/remove flights, aircraft, and airports
 - Full CRUD operations via API
@@ -61,79 +67,100 @@ Many thanks to the authors of the original code.
 
 - Java 21 or higher
 - Maven 3.6+ (or use included wrapper)
-- MySQL 8.0+ or MariaDB 10.3+
+- Docker & Docker Compose (for containerised setup)
+- MySQL 8.0+ or MariaDB 10.3+ (for manual setup)
 - Git
 
 ## ⚙️ Configuration
 
-### Environment Variables
+Create a `.env` file (see `.env.example` for the full list). Example values for local Docker Compose usage:
 
-Create a `.env` file (see `.env.example` for template):
-
-```bash
+```env
 # Database Configuration
-export DB_URL=jdbc:mysql://localhost:3306/ftb_db
-export DB_USERNAME=root
-export DB_PASSWORD=your_secure_password
+DB_URL=jdbc:mysql://db:3306/ftb_db
+DB_USERNAME=ftb_user
+DB_PASSWORD=ftb_password
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=ftb_db
+MYSQL_USER=ftb_user
+MYSQL_PASSWORD=ftb_password
 
 # Application Configuration
-export APP_PORT=8080
+APP_PORT=8080
 
-# JWT Configuration (for API authentication)
-export JWT_SECRET=your_super_secure_jwt_secret_key_here
-export JWT_EXPIRATION=86400
-export JWT_REFRESH_EXPIRATION=604800
+# JWT Configuration
+JWT_SECRET=change-me-to-long-random-string
+JWT_EXPIRATION=86400
+JWT_REFRESH_EXPIRATION=604800
 ```
+
+> ℹ️ When running the application outside of Docker Compose, adjust `DB_URL`, `DB_USERNAME`, and `DB_PASSWORD` to point to your database host.
 
 ## 🚀 Quick Start
 
-### 1. Database Setup
+### Quick Start with Docker
 
-**Option A: Docker (Recommended)**
-```bash
-docker run -p 3306:3306 --name ftb-mysql \
-  -e MYSQL_ROOT_PASSWORD=your_password \
-  -e MYSQL_DATABASE=ftb_db \
-  -d mysql:8.0
-```
+1. Copy environment variables and adjust as needed:
 
-**Option B: Local Installation**
-- Install MySQL/MariaDB
-- Create database: `CREATE DATABASE ftb_db;`
+   ```bash
+   cp .env.example .env
+   ```
 
-### 2. Application Setup
+   _.env is loaded into both containers via `env_file`, so keep it next to `docker-compose.yml` and fill all variables (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `MYSQL__`, `JWT__`). If a value is missing, the app exits with a clear error — misconfiguration is immediately visible._
 
-```bash
-# Clone repository
-git clone <repository-url>
-cd mentorpiece_ftb
+2. Build and launch the stack (Spring Boot + MySQL):
 
-# Configure environment
-cp .env.example .env
-# Edit .env with your database credentials
+   ```bash
+   docker compose up --build
+   ```
 
-# Build application
-./mvnw clean package -DskipTests
+   Optionally create `database/mysql_data` before the first run (Compose will create it automatically). The initial launch imports `database/ftb.sql` into MySQL; the app starts once the database healthcheck passes.
 
-# Run application
-source .env
-java -jar target/flightticketbooking-1.0.0.jar
-```
+   _If you change `MYSQL_USER`/`MYSQL_PASSWORD`, remove `database/mysql_data` to re-initialise MySQL with the new credentials._
 
-### 3. Access Application
+3. After startup the API is available at `http://localhost:8080`, and the database at `localhost:3306` (credentials from `.env`, e.g. `root`/`root`).
 
-- **Web Interface:** http://localhost:8080
-- **API Documentation:** http://localhost:8080/swagger-ui/index.html
-- **API Specification:** http://localhost:8080/v3/api-docs
+   Stop the stack with `docker compose down`; delete `database/mysql_data` to reset the database.
+
+### Manual setup
+
+1. **Prepare database**
+
+   - Install MySQL/MariaDB and create database `ftb_db`, or reuse an existing instance.
+
+2. **Build application**
+
+   ```bash
+   git clone <repository-url>
+   cd mentorpiece_ftb
+   cp .env.example .env
+   # edit .env to point to your database
+   ./mvnw clean package -DskipTests
+   ```
+
+3. **Run application without Docker**
+
+   ```bash
+   java -jar target/flightticketbooking-1.0.0.jar
+   ```
+
+   > Ensure all required environment variables (see `.env.example`) are exported in your shell — e.g. via manual `export`, `direnv`, or your preferred secrets manager.
+
+4. **Access services**
+   - Web UI: http://localhost:8080
+   - API docs: http://localhost:8080/swagger-ui/index.html
+   - OpenAPI spec: http://localhost:8080/v3/api-docs
 
 ## 🔐 Authentication
 
 ### Web Interface
+
 - Login at `/login` with username/password
 - Session-based authentication
 - Role switching available in UI
 
 ### API Access
+
 - **Basic Auth:** Use username/password for API calls
 - **JWT:** Obtain token via `/api/auth/login` endpoint
 - **Bearer Token:** Include in Authorization header
@@ -172,42 +199,40 @@ src/main/resources/
 ## 🔧 Development
 
 ### Running in Development Mode
+
 ```bash
 export DB_PASSWORD="your_password"
 ./mvnw spring-boot:run
 ```
 
 ### Building for Production
+
 ```bash
 ./mvnw clean package -DskipTests
 ```
 
 ### Running Tests
+
 ```bash
 ./mvnw test
 ```
 
 ## 📊 API Documentation
 
-Access comprehensive API documentation at:
 - **Swagger UI:** `/swagger-ui/index.html`
 - **OpenAPI JSON:** `/v3/api-docs`
 
 ## 🐳 Docker Deployment
 
-```dockerfile
-FROM openjdk:21-jre-slim
-COPY target/flightticketbooking-1.0.0.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
-```
+- Multi-stage `Dockerfile` builds the application using Maven wrapper and runs it on Eclipse Temurin JRE 21.
+- `docker-compose.yml` orchestrates MySQL and the Spring Boot service, mounts `database/mysql_data`, and loads `database/ftb.sql` on first start.
+- Environment variables are injected through `.env`; adjust the file for different environments.
 
 ## 🔒 Security Notes
 
-- Database credentials use environment variables
-- JWT secrets should be cryptographically strong
-- HTTPS recommended for production
-- Regular security updates advised
+- Store strong secrets in `.env` or your secret manager.
+- Use HTTPS in production deployments.
+- Rotate JWT secrets periodically.
 
 ## 📝 TODO
 
@@ -216,7 +241,7 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 - [ ] Payment integration
 - [ ] Mobile responsive improvements
 - [ ] Performance monitoring
-- [ ] Docker compose setup
+- [x] Docker compose setup
 - [ ] CI/CD pipeline
 
 ## 🤝 Contributing
