@@ -257,6 +257,86 @@
     justify-content: center;
 }
 
+/* =============================================================================
+   FTB - Home Page Styles - Welcome Block and CTA Components
+   Additional styles specific to the home page welcome section
+   ============================================================================= */
+
+/* =============================================================================
+   WELCOME BLOCK SYSTEM
+   ============================================================================= */
+.welcome-block {
+    position: relative;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.background-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    opacity: 0.3;
+    z-index: 1;
+}
+
+.grid-item {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 0.3s ease;
+}
+
+.grid-item:hover {
+    opacity: 0.8;
+}
+
+.welcome-message {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2rem;
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(251, 107, 0, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
+}
+
+.welcome-message h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(255, 255, 255, 0.5),
+        0 0 40px rgba(251, 107, 0, 0.3);
+    position: relative;
+}
+
+.welcome-message p {
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(255, 255, 255, 0.5),
+        0 0 40px rgba(251, 107, 0, 0.3);
+    position: relative;
+}
+
+/* =============================================================================
+   RESPONSIVE WELCOME BLOCK
+   ============================================================================= */
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5rem;
@@ -278,5 +358,13 @@
 
     .section-title {
         font-size: 2rem;
+    }
+
+    .welcome-block {
+        min-height: 40vh;
+    }
+    
+    .welcome-message h1 {
+        font-size: 2.5rem;
     }
 }
