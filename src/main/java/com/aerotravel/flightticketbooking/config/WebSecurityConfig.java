@@ -60,7 +60,7 @@ public class WebSecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(authz -> authz
                         // Public endpoints
-                        .requestMatchers("/", "/flights_list", "/flight/search", "/flight/book/verify", "/flight/book/cancel", "/register", "/login", "/promo", "/promo/**").permitAll()
+                        .requestMatchers("/", "/register", "/login", "/promo").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         
                         // Static resources - favicon and other assets
@@ -70,7 +70,10 @@ public class WebSecurityConfig {
                         
                         // OAuth 2.0 / JWT Authentication endpoints
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh").permitAll()
-                        
+
+                        // Public API endpoints
+                        .requestMatchers("/api/version").permitAll()
+
                         // Promo-related API endpoints
                         .requestMatchers("/api/promo/**").permitAll()
                         
@@ -79,10 +82,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/**").hasAnyRole("ADMIN", "AGENT")
                         
                         // Web endpoints with role-based access - Session-based
-                        .requestMatchers("/switch-role", "/api/current-user", "/current-user", "/api/switch-role").hasAnyRole("ADMIN", "AGENT", "USER")
-                        .requestMatchers("/flight/book**", "/flight/book/new").hasAnyRole("ADMIN", "AGENT")
-                        .requestMatchers("/user/**").hasAnyRole("ADMIN", "AGENT")
-                        .requestMatchers("/flights", "/flight/search", "/flight/book/verify").hasAnyRole("ADMIN", "AGENT", "USER")
+                        .requestMatchers("/api/switch-role", "/switch-role", "/api/current-user", "/current-user").hasAnyRole("ADMIN", "AGENT", "USER")
+                        .requestMatchers("/flights", "/flight/search", "/flight/book/verify", "/flight/book/cancel").hasAnyRole("ADMIN", "AGENT", "USER")
                         .requestMatchers("/**").hasAnyRole("ADMIN", "AGENT")
                         .anyRequest().authenticated()
                 )

@@ -25,16 +25,23 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @EnableJpaRepositories("com.aerotravel.flightticketbooking.repository")
 @EntityScan("com.aerotravel.flightticketbooking.model")
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(title = "Flight ticket booking API", version = "00.07",
+@OpenAPIDefinition(
+    info = @Info(title = "Flight ticket booking API", version = "00.07",
         contact = @Contact(name = "FTB API Support",
                 url = "https://mentorpiece.org",
-                email = "1@mentorpiece.org")))
+                email = "1@mentorpiece.org")),
+    servers = {
+        @Server(url = "https://ftb.mentorpiece.org", description = "Production server"),
+        @Server(url = "http://localhost:8080", description = "Local development server")
+    }
+)
 @SecurityScheme(
         name = "basicAuth",
         type = SecuritySchemeType.HTTP,
