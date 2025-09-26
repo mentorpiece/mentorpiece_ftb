@@ -8,9 +8,9 @@
         <version>3.3.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.aeroTravel</groupId>
+    <groupId>com.FTB</groupId>
     <artifactId>flightticketbooking</artifactId>
-    <version>1.0.0</version>
+    <version>${buildNumber}</version>
     <name>flightTicketBooking</name>
     <packaging>jar</packaging>
     <description>Flight ticket booking application, Mentorpiece edition</description>
@@ -21,6 +21,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <servlet.version>4.0.0</servlet.version>
         <faker.version>2.0.2</faker.version>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     </properties>
 
     <dependencies>
@@ -154,7 +155,23 @@
 
     </dependencies>
 
+    <scm>
+        <connection>scm:git:file://.</connection>
+        <url>file://.</url>
+    </scm>
+
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>.</directory>
+                <includes>
+                    <include>build.number</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -169,8 +186,52 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
-            
+
+            <!-- Build Number Plugin for auto-incrementing patch version -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <format>{0}.{1}.{2}</format>
+                    <items>
+                        <item>1</item>
+                        <item>1</item>
+                        <item buildNumberPropertyName="patch.version">buildNumber</item>
+                    </items>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <revisionOnScmFailure>unknown</revisionOnScmFailure>
+                    <buildNumberPropertiesFileLocation>${basedir}/build.number</buildNumberPropertiesFileLocation>
+                </configuration>
+            </plugin>
+
+            <!-- Versions Plugin for manual version management -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.16.2</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
+            </plugin>
+
             <!-- Swagger Sync Plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

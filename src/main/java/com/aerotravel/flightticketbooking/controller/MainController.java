@@ -37,6 +37,41 @@ public class MainController {
     @Autowired
     AircraftRestController aircraftRestController;
 
+    @ModelAttribute("appVersion")
+    public String getApplicationVersion() {
+        try {
+            // Try to read build number from properties file in classpath
+            var props = new java.util.Properties();
+            var is = getClass().getClassLoader().getResourceAsStream("build.number");
+            if (is != null) {
+                props.load(is);
+                String buildNumber = props.getProperty("buildNumber");
+                if (buildNumber != null) {
+                    return "1.1." + buildNumber;
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Could not read build number from classpath", e);
+        }
+
+        // Fallback: read directly from file system (for development)
+        try {
+            var buildFile = new java.io.File("build.number");
+            if (buildFile.exists()) {
+                var props = new java.util.Properties();
+                props.load(new java.io.FileInputStream(buildFile));
+                String buildNumber = props.getProperty("buildNumber");
+                if (buildNumber != null) {
+                    return "1.1." + buildNumber;
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Could not read build number from file system", e);
+        }
+
+        return "1.1.13";
+    }
+
     @GetMapping("/")
     public String showHomePage() {
         return "index";

@@ -215,7 +215,9 @@
     <footer class="language-switcher-footer">
         <div class="container-modern">
             <div class="language-switcher">
-                <span class="language-label" th:text="#{common.language}"></span>
+                <div class="version-display">
+                    <span th:text="#{common.version} + ': ' + ${appVersion}"></span>
+                </div>
                 <div class="language-options">
                     <a href="?lang=en" class="language-option" th:classappend="${#locale.language == 'en'} ? 'active' : ''">
                         <span class="flag-icon">🇺🇸</span>
@@ -228,7 +230,7 @@
                     <a href="?lang=fr" class="language-option" th:classappend="${#locale.language == 'fr'} ? 'active' : ''">
                         <span class="flag-icon">🇫🇷</span>
                         <span th:text="#{language.french}"></span>
-                    </a>                    
+                    </a>
                     <a href="?lang=am" class="language-option" th:classappend="${#locale.language == 'am'} ? 'active' : ''">
                         <span class="flag-icon">🇦🇲</span>
                         <span th:text="#{language.armenian}">Հայերեն</span>
