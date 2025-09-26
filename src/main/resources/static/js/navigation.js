@@ -186,30 +186,28 @@ function handleUnauthenticatedState() {
         item.classList.remove('role-visible', 'role-agent-only');
     });
 
-    // Only hide user menu if we're actually on a public page or definitely not authenticated
-    // Check if we're on login/register pages or if Spring Security says not authenticated
-    const isPublicPage = window.location.pathname.includes('/login') || 
-                        window.location.pathname.includes('/register') ||
-                        window.location.pathname === '/';
-    
-    if (isPublicPage) {
+    // Only hide user menu if we're actually on login/register pages
+    // Don't hide user menu on root path since authenticated users should see it there too
+    const isLoginPage = window.location.pathname.includes('/login') ||
+                        window.location.pathname.includes('/register');
+
+    if (isLoginPage) {
         const currentRoleBadge = document.getElementById('currentRoleBadge');
         if (currentRoleBadge) {
             currentRoleBadge.style.display = 'none';
         }
-        
+
         const userAvatar = document.getElementById('userMenuTrigger');
         if (userAvatar) {
             userAvatar.style.display = 'none';
         }
+
+        // Update mobile role display
+        updateMobileRoleDisplay('Guest');
     } else {
-        // For other pages, just show default user state instead of hiding completely
+        // For other pages (including root), show default user state instead of hiding completely
         handleDefaultUserState();
-        return;
     }
-    
-    // Update mobile role display
-    updateMobileRoleDisplay('Guest');
 }
 
 // Function to handle default user state (for errors)

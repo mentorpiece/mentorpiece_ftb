@@ -88,8 +88,12 @@
                 <div class="input-group">
                     <label for="email"><span th:text="#{auth.email}"></span><span class="required">*</span></label>
                     <input id="email" th:field="*{email}" type="email" required>
+                    <div class="form-help">
+                        <i data-feather="info" style="width: 12px; height: 12px;"></i>
+                        <span th:text="#{auth.email_help}">123</span>
+                    </div>
                     <div class="form-error" th:if="${#fields.hasErrors('email')}">
-                        <i data-feather="alert-circle" style="width: 12px; height: 12px;"></i>
+                        <i data-feather="alert-circle" style="width: 12px; height: 12px;"></i>                        
                         <span th:errors="*{email}"></span>
                     </div>
                     <div class="form-error" th:if="${emailError}">
