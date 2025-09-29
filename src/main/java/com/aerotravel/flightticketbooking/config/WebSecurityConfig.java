@@ -60,7 +60,7 @@ public class WebSecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(authz -> authz
                         // Public endpoints
-                        .requestMatchers("/", "/register", "/login", "/promo").permitAll()
+                        .requestMatchers("/", "/register", "/login", "/promo", "/rate-limit-exceeded").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         
                         // Static resources - favicon and other assets
@@ -79,10 +79,15 @@ public class WebSecurityConfig {
                         
                         // API endpoints requiring authentication - JWT or Basic Auth
                         .requestMatchers("/api/auth/me", "/api/auth/logout").authenticated()
+
+                        // Specific API endpoints with custom role requirements (must come before general /api/**)
+                        .requestMatchers("/api/switch-role", "/api/current-user").hasAnyRole("ADMIN", "AGENT", "USER")
+
+                        // General API endpoints requiring ADMIN or AGENT roles
                         .requestMatchers("/api/**").hasAnyRole("ADMIN", "AGENT")
-                        
+
                         // Web endpoints with role-based access - Session-based
-                        .requestMatchers("/api/switch-role", "/switch-role", "/api/current-user", "/current-user").hasAnyRole("ADMIN", "AGENT", "USER")
+                        .requestMatchers("/switch-role", "/current-user").hasAnyRole("ADMIN", "AGENT", "USER")
                         .requestMatchers("/flights", "/flight/search", "/flight/book/verify", "/flight/book/cancel").hasAnyRole("ADMIN", "AGENT", "USER")
                         .requestMatchers("/**").hasAnyRole("ADMIN", "AGENT")
                         .anyRequest().authenticated()
