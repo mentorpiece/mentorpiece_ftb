@@ -238,4 +238,14 @@ public class MainController {
         log.info("Ola-ola-ola-ola, somebody is going to login somewhere!");
         return "index";
     }
+
+    @GetMapping("/swagger-ui")
+    public String redirectToSwaggerUI() {
+        return "redirect:/swagger-ui.html";
+    }
+
+    @GetMapping("/swagger-ui/")
+    public String redirectToSwaggerUIWithSlash() {
+        return "redirect:/swagger-ui.html";
+    }
 }

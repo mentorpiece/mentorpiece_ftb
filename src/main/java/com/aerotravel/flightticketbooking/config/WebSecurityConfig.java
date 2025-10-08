@@ -61,7 +61,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         // Public endpoints
                         .requestMatchers("/", "/register", "/login", "/promo", "/rate-limit-exceeded").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/", "/swagger-ui", "/v3/api-docs/**", "/v3/api-docs.yaml", "/v3/api-docs-compact", "/v3/api-docs-compact.yaml", "/database/ftb.sql", "/swagger-resources/**", "/webjars/**").permitAll()
                         
                         // Static resources - favicon and other assets
                         .requestMatchers("/favicon.ico", "/robots.txt").permitAll()

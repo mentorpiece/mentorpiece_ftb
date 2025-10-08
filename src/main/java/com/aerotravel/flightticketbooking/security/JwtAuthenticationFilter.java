@@ -101,6 +101,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                requestPath.startsWith("/static/") ||
                requestPath.startsWith("/swagger-ui/") ||
                requestPath.startsWith("/v3/api-docs/") ||
+               requestPath.equals("/v3/api-docs.yaml") ||
+               requestPath.equals("/v3/api-docs-compact") ||
+               requestPath.equals("/v3/api-docs-compact.yaml") ||
+               requestPath.equals("/database/ftb.sql") ||
                requestPath.equals("/favicon.ico");
     }
 }
