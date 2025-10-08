@@ -228,6 +228,11 @@ public class MainController {
         return "promo";
     }
 
+    @GetMapping("/rate-limit-exceeded")
+    public String showRateLimitExceededPage() {
+        return "rate-limit-exceeded";
+    }
+
     @GetMapping("fancy")
     public String showLoginPage1() {
         log.info("Ola-ola-ola-ola, somebody is going to login somewhere!");

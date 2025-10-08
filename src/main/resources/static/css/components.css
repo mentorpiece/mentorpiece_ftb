@@ -601,7 +601,123 @@
 }
 
 /* =============================================================================
-   8. RESPONSIVE DESIGN
+   8. RATE LIMIT PAGE COMPONENTS
+   ============================================================================= */
+
+/* Rate limit page container */
+.ftb-rate-limit-container {
+    max-width: 600px;
+    margin: 100px auto;
+    padding: var(--ftb-spacing-2xl);
+    text-align: center;
+    background: var(--ftb-card-bg);
+    border-radius: var(--ftb-radius-xl);
+    box-shadow: var(--ftb-shadow-lg);
+    border: var(--ftb-card-border);
+}
+
+/* Rate limit icon */
+.ftb-rate-limit-icon {
+    font-size: 4rem;
+    color: var(--ftb-error);
+    margin-bottom: var(--ftb-spacing-lg);
+    display: block;
+}
+
+/* Rate limit title */
+.ftb-rate-limit-title {
+    color: var(--ftb-text-primary);
+    font-size: 2rem;
+    margin-bottom: var(--ftb-spacing-md);
+    font-weight: 600;
+    font-family: var(--ftb-font-sans);
+}
+
+/* Rate limit message */
+.ftb-rate-limit-message {
+    color: var(--ftb-text-secondary);
+    font-size: 1.1rem;
+    line-height: 2.5;
+    margin-bottom: var(--ftb-spacing-xl);
+}
+
+.ftb-rate-limit-message span,
+.ftb-rate-limit-message strong {
+    display: block;
+    margin-bottom: var(--ftb-spacing-sm);
+}
+
+/* Countdown timer */
+.ftb-rate-limit-container .ftb-countdown {
+    font-size: 1.2rem;
+    color: var(--ftb-error);
+    font-weight: 600;
+    margin-bottom: 40px !important;
+}
+
+/* Back button for rate limit page */
+.ftb-rate-limit-back-btn {
+    display: inline-block;
+    padding: var(--ftb-spacing-md) var(--ftb-spacing-xl);
+    background: var(--ftb-secondary);
+    color: var(--ftb-white);
+    text-decoration: none;
+    border-radius: var(--ftb-radius-md);
+    font-weight: 500;
+    transition: all var(--ftb-transition-base);
+    box-shadow: var(--ftb-shadow-sm);
+}
+
+.ftb-rate-limit-back-btn:hover {
+    background: var(--ftb-accent);
+    text-decoration: none;
+    color: var(--ftb-white);
+    transform: translateY(-1px);
+    box-shadow: var(--ftb-shadow-md);
+}
+
+/* Success message styling for countdown completion */
+.ftb-countdown-success {
+    color: var(--ftb-success) !important;
+}
+
+/* Mobile responsiveness for rate limit page */
+@media (max-width: 991.98px) {
+    .ftb-rate-limit-container {
+        margin: var(--ftb-spacing-xl) var(--ftb-spacing-md);
+        padding: var(--ftb-spacing-xl);
+    }
+
+    .ftb-rate-limit-title {
+        font-size: 1.5rem;
+    }
+
+    .ftb-rate-limit-message {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .ftb-rate-limit-container {
+        margin: var(--ftb-spacing-lg) var(--ftb-spacing-sm);
+        padding: var(--ftb-spacing-lg);
+    }
+
+    .ftb-rate-limit-icon {
+        font-size: 3rem;
+    }
+
+    .ftb-rate-limit-title {
+        font-size: 1.25rem;
+    }
+
+    .ftb-countdown {
+        font-size: 1.1rem;
+    }
+}
+
+/* =============================================================================
+   9. RESPONSIVE DESIGN
    ============================================================================= */
 
 /* Mobile optimizations */

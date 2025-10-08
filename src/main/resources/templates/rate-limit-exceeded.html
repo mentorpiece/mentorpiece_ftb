@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{rate_limit.title} + ' - FTB'"></title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <div th:replace="~{layout/master-page :: header-css}"></div>
+</head>
+<body>
+<div class="header" th:replace="~{layout/master-page :: header}"></div>
+
+<div class="ftb-rate-limit-container">
+    <div class="ftb-rate-limit-icon">⚠️</div>
+    <h1 class="ftb-rate-limit-title" th:text="#{rate_limit.title}"></h1>
+    <p class="ftb-rate-limit-message">
+        <span th:text="#{rate_limit.message}"></span>
+        <strong th:text="#{rate_limit.limit_info}"></strong>
+        <span th:text="#{rate_limit.wait_message}"></span>
+    </p>
+    <div class="ftb-countdown" id="countdown">
+        <span th:text="#{rate_limit.countdown.wait(60)}"></span>
+    </div>
+    <a href="/" class="ftb-rate-limit-back-btn" th:text="#{rate_limit.back_home}"></a>
+</div>
+
+<script th:inline="javascript">
+    // Simple countdown timer with internationalization
+    let timeLeft = 60;
+    const countdownElement = document.getElementById('countdown');
+
+    // Get internationalized messages
+    const waitMessage = /*[[#{rate_limit.countdown.wait}]]*/ '';
+    const successMessage = /*[[#{rate_limit.countdown.success}]]*/ '';
+
+    const countdown = setInterval(() => {
+        timeLeft--;
+
+        if (timeLeft > 0) {
+            // Replace {0} placeholder with actual time
+            const message = waitMessage.replace('{0}', timeLeft);
+            countdownElement.innerHTML = `<span>${message}</span>`;
+        } else {
+            clearInterval(countdown);
+            countdownElement.innerHTML = `<span class="ftb-countdown-success">${successMessage}</span>`;
+
+            // Auto-redirect after countdown
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+        }
+    }, 1000);
+</script>
+
+<div th:replace="~{layout/master-page :: footer}"></div>
+</body>
+</html>
