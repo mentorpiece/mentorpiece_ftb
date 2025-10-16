@@ -7,8 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <div th:replace="layout/master-page :: header-css"/>
     <link rel="stylesheet" href="/css/auth-pages.css">
+    <div th:replace="layout/master-page :: gtm-head"/>
 </head>
 <body>
+<div th:replace="layout/master-page :: gtm-body"/>
     <!-- Background Grid -->
     <div class="auth-background register-background">
         <div class="bg-item" style="background-image: url('/img/pic1.jpg');"></div>

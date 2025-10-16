@@ -33,6 +33,7 @@
 
 </head>
 <body>
+
 <div th:fragment="header">
     <!-- Modern Navigation -->
     <nav class="modern-navbar">
@@ -264,5 +265,25 @@
     <script src="/js/common.js"></script>
     <script src="/js/navigation.js"></script>
 </div>
+
+<!-- GTM Head Fragment -->
+<div th:fragment="gtm-head">
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-NRQL4ZP');</script>
+    <!-- End Google Tag Manager -->
+</div>
+
+<!-- GTM Body Fragment -->
+<div th:fragment="gtm-body">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NRQL4ZP"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+</div>
+
 </body>
 </html>

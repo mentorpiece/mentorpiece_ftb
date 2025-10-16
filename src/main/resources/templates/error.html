@@ -72,8 +72,10 @@
             text-decoration: none;
         }
     </style>
+    <div th:replace="layout/master-page :: gtm-head"/>
 </head>
 <body>
+<div th:replace="layout/master-page :: gtm-body"/>
     <div class="error-container">
         <div class="error-title" th:text="#{common.error.title}"></div>
         <div class="error-message" th:text="#{common.error.message}"></div>

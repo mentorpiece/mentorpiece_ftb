@@ -6,8 +6,10 @@
     <title th:text="#{page.title.new_passenger}"></title>
     <div th:replace="layout/master-page :: header-css"/>
     <style type="text/css"></style>
+    <div th:replace="layout/master-page :: gtm-head"/>
 </head>
 <body>
+<div th:replace="layout/master-page :: gtm-body"/>
 <div class="header" th:replace="layout/master-page :: header"/>
 <div class="container">
     <th:block layout:fragment="content">

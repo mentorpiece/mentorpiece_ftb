@@ -5,8 +5,10 @@
     <title th:text="#{rate_limit.title} + ' - FTB'"></title>
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <div th:replace="~{layout/master-page :: header-css}"></div>
+    <div th:replace="layout/master-page :: gtm-head"/>
 </head>
 <body>
+<div th:replace="layout/master-page :: gtm-body"/>
 <div class="header" th:replace="~{layout/master-page :: header}"></div>
 
 <div class="ftb-rate-limit-container">
