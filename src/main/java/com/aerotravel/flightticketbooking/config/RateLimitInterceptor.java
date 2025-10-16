@@ -15,8 +15,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class RateLimitInterceptor implements HandlerInterceptor {
 
-    private static final int MAX_REQUESTS_PER_MINUTE = 20;
-    private static final long WINDOW_SIZE_MINUTES = 1;
+    private static final int MAX_API_REQUESTS_PER_STANDARD_WINDOW = 20;
+    private static final int MAX_PAGE_REQUESTS_PER_STANDARD_WINDOW = 20;
+    private static final long RATE_LIMIT_STANDARD_WINDOW = 60;
 
     // Store request counts per IP address
     private final ConcurrentHashMap<String, RequestInfo> requestCounts = new ConcurrentHashMap<>();
@@ -25,7 +26,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String clientIp = getClientIpAddress(request);
 
-        if (isRateLimited(clientIp)) {
+        if (isRateLimited(clientIp, request)) {
             log.warn("Rate limit exceeded for IP: {}", clientIp);
             response.setStatus(429); // Too Many Requests
 
@@ -37,7 +38,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
                 (acceptHeader != null && acceptHeader.contains("application/json"))) {
                 // Return JSON response for API requests
                 response.setContentType("application/json");
-                response.getWriter().write("{\"error\":\"Rate limit exceeded\",\"message\":\"Too many requests. Maximum 20 requests per minute allowed.\",\"retryAfter\":60}");
+                response.getWriter().write("{\"error\":\"Rate limit exceeded\",\"message\":\"Too many requests. Maximum " + MAX_API_REQUESTS_PER_STANDARD_WINDOW + " API requests per standard window allowed.\",\"retryAfter\":60}");
             } else {
                 // Redirect to user-friendly error page for UI requests
                 response.sendRedirect("/rate-limit-exceeded");
@@ -48,21 +49,32 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private boolean isRateLimited(String clientIp) {
+    private boolean isRateLimited(String clientIp, HttpServletRequest request) {
         LocalDateTime now = LocalDateTime.now();
-        RequestInfo requestInfo = requestCounts.computeIfAbsent(clientIp, k -> new RequestInfo());
+        boolean isApiRequest = isApiRequest(request);
+        String key = clientIp + (isApiRequest ? ":api" : ":page");
+        RequestInfo requestInfo = requestCounts.computeIfAbsent(key, k -> new RequestInfo());
 
         synchronized (requestInfo) {
             // Reset counter if window has passed
-            if (requestInfo.windowStart.isBefore(now.minus(WINDOW_SIZE_MINUTES, ChronoUnit.MINUTES))) {
+            if (requestInfo.windowStart.isBefore(now.minus(RATE_LIMIT_STANDARD_WINDOW, ChronoUnit.SECONDS))) {
                 requestInfo.count.set(0);
                 requestInfo.windowStart = now;
             }
 
             // Increment and check limit
             int currentCount = requestInfo.count.incrementAndGet();
-            return currentCount > MAX_REQUESTS_PER_MINUTE;
+            int maxRequests = isApiRequest ? MAX_API_REQUESTS_PER_STANDARD_WINDOW : MAX_PAGE_REQUESTS_PER_STANDARD_WINDOW;
+            return currentCount > maxRequests;
         }
+    }
+
+    private boolean isApiRequest(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        String acceptHeader = request.getHeader("Accept");
+
+        return requestURI.startsWith("/api/") ||
+               (acceptHeader != null && acceptHeader.contains("application/json"));
     }
 
     private String getClientIpAddress(HttpServletRequest request) {
@@ -83,7 +95,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 
     // Clean up old entries periodically to prevent memory leaks
     public void cleanupOldEntries() {
-        LocalDateTime cutoff = LocalDateTime.now().minus(WINDOW_SIZE_MINUTES * 2, ChronoUnit.MINUTES);
+        LocalDateTime cutoff = LocalDateTime.now().minus(RATE_LIMIT_STANDARD_WINDOW * 2, ChronoUnit.SECONDS);
         requestCounts.entrySet().removeIf(entry -> entry.getValue().windowStart.isBefore(cutoff));
     }
 
