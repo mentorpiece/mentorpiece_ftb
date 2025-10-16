@@ -85,7 +85,17 @@ function switchRole(roleName) {
 
 // Function to update menu visibility and role display based on current role
 function updateMenuVisibility() {
-    fetch('/api/current-user')
+    // Check if user menu is visible (indicates user is authenticated via Thymeleaf)
+    const userMenuTrigger = document.getElementById('userMenuTrigger');
+    const isUserMenuVisible = userMenuTrigger && getComputedStyle(userMenuTrigger).display !== 'none';
+
+    fetch('/api/current-user', {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
         .then(response => {
             // Check if the response is ok (status 200-299)
             if (!response.ok) {
@@ -165,14 +175,20 @@ function updateMenuVisibility() {
             updateMobileRoleDisplay(roleDisplayText);
         })
         .catch(error => {
-            // Handle authentication errors gracefully
-            if (error.message === 'User not authenticated') {
-                // User is not authenticated, hide all role-restricted items and show login option
-                handleUnauthenticatedState();
+            // FALLBACK LOGIC: If user menu is visible but API call failed, assume user is authenticated
+            if (isUserMenuVisible) {
+                // Use fallback: assume user role and enable basic functionality
+                handleAuthenticatedUserFallback();
             } else {
-                console.error('Error fetching current user:', error);
-                // For other errors, default to basic user state
-                handleDefaultUserState();
+                // Handle authentication errors gracefully
+                if (error.message === 'User not authenticated') {
+                    // User is not authenticated, hide all role-restricted items and show login option
+                    handleUnauthenticatedState();
+                } else {
+                    console.error('Error fetching current user:', error);
+                    // For other errors, default to basic user state
+                    handleDefaultUserState();
+                }
             }
         });
 }
@@ -208,6 +224,34 @@ function handleUnauthenticatedState() {
         // For other pages (including root), show default user state instead of hiding completely
         handleDefaultUserState();
     }
+}
+
+// Function to handle authenticated user when API call fails but user menu is visible
+function handleAuthenticatedUserFallback() {
+    // Enable all role-restricted items (assume user has access)
+    const roleRestrictedItems = document.querySelectorAll('.role-restricted');
+    roleRestrictedItems.forEach(item => {
+        item.classList.remove('role-hidden');
+        item.classList.add('role-visible');
+    });
+
+    // Set default role display
+    const currentRoleBadge = document.getElementById('currentRoleBadge');
+    if (currentRoleBadge) {
+        currentRoleBadge.innerHTML = `
+            <i data-feather="user" class="nav-icon"></i>
+            <span>User</span>
+        `;
+        currentRoleBadge.style.display = 'flex';
+
+        // Reinitialize feather icons
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    }
+
+    // Update mobile role display
+    updateMobileRoleDisplay('User');
 }
 
 // Function to handle default user state (for errors)
@@ -375,11 +419,80 @@ function updateWelcomeTitle() {
     }
 }
 
+// Force click handling on home page for dropdown items
+function forceDropdownClickHandling() {
+    // Function to set up handlers with multiple retry attempts
+    function setupHandlers(attempt = 0) {
+        const maxAttempts = 5;
+
+        // Try to find dropdown items with multiple selectors
+        let dropdownItems = document.querySelectorAll('.modern-dropdown-item[onclick*="switchRole"]');
+        if (dropdownItems.length === 0) {
+            dropdownItems = document.querySelectorAll('.modern-dropdown-item');
+        }
+        if (dropdownItems.length === 0) {
+            dropdownItems = document.querySelectorAll('[onclick*="switchRole"]');
+        }
+
+        if (dropdownItems.length > 0) {
+            dropdownItems.forEach((item) => {
+                // Get role from onclick attribute or text content
+                let roleName = null;
+                const onclickContent = item.getAttribute('onclick');
+
+                if (onclickContent && onclickContent.includes('switchRole')) {
+                    const roleMatch = onclickContent.match(/switchRole\('([^']+)'\)/);
+                    if (roleMatch) {
+                        roleName = roleMatch[1];
+                    }
+                } else {
+                    // Try to extract from text content
+                    const text = item.textContent.trim();
+                    if (text === 'User') roleName = 'ROLE_USER';
+                    else if (text === 'Agent') roleName = 'ROLE_AGENT';
+                    else if (text === 'Admin') roleName = 'ROLE_ADMIN';
+                }
+
+                if (roleName) {
+                    // Remove existing handlers and attributes
+                    item.removeAttribute('onclick');
+
+                    // Clone the node to remove all existing event listeners
+                    const newItem = item.cloneNode(true);
+                    item.parentNode.replaceChild(newItem, item);
+
+                    // Add new event listeners
+                    newItem.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        switchRole(roleName);
+                        return false;
+                    }, true);
+
+                    // Make sure it's visible and clickable
+                    newItem.style.pointerEvents = 'auto';
+                    newItem.style.cursor = 'pointer';
+                }
+            });
+        } else if (attempt < maxAttempts) {
+            setTimeout(() => setupHandlers(attempt + 1), 200);
+        }
+    }
+
+    setupHandlers();
+}
+
 // Initialize navigation functionality
 document.addEventListener('DOMContentLoaded', function() {
     updateMenuVisibility();
     updateActiveNavigation();
     checkUrlForRoleChange();
+
+    // Add home page specific fixes
+    if (window.location.pathname === '/') {
+        forceDropdownClickHandling();
+    }
 
     // Close mobile menu on resize to desktop and update menu visibility
     window.addEventListener('resize', function() {
@@ -405,6 +518,11 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('load', function() {
     updateMenuVisibility();
     checkUrlForRoleChange();
+
+    // Additional home page fix on window load
+    if (window.location.pathname === '/') {
+        forceDropdownClickHandling();
+    }
 });
 
 // Removed periodic checks - they were causing UI interference

@@ -89,7 +89,13 @@ public class WebSecurityConfig {
                         // Web endpoints with role-based access - Session-based
                         .requestMatchers("/switch-role", "/current-user").hasAnyRole("ADMIN", "AGENT", "USER")
                         .requestMatchers("/flights", "/flight/search", "/flight/book/verify", "/flight/book/cancel").hasAnyRole("ADMIN", "AGENT", "USER")
-                        .requestMatchers("/**").hasAnyRole("ADMIN", "AGENT")
+
+                        // Admin-only endpoints
+                        .requestMatchers("/airport/**", "/aircraft/**", "/aircrafts/**", "/airports/**", "/flight/new", "/flight/delete", "/flight/edit").hasRole("ADMIN")
+
+                        // Authenticated user endpoints
+                        .requestMatchers("/flight/book/**", "/passengers").hasAnyRole("ADMIN", "AGENT", "USER")
+
                         .anyRequest().authenticated()
                 )
                 // Session management - Allow sessions for web interface, but JWT endpoints are stateless
